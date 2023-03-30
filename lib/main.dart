@@ -3,15 +3,15 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:ipark/available_places.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
+  );
   runApp(const MyApp());
   debugPrint(FirebaseFirestore.instance.collection('account').toString());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const AvailablePlaces(),
     );
   }
 }
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
-  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -42,7 +41,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  
 
   void _incrementCounter() {
     setState(() {
