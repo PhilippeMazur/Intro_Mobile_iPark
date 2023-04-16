@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,8 +17,11 @@ class AvailablePlaces extends StatefulWidget {
 }
 
 class _AvailablePlacesState extends State<AvailablePlaces> {
-  final availablePlacesDB =
-      FirebaseFirestore.instance.collection("parking_spots");
+  final AvailablePlacesSnapshot =
+      FirebaseFirestore.instance.collection("parking_spots").snapshots();
+  late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
+      _streamSubscription;
+  List<Map<String, dynamic>> _data = [];
 
   List<int> data = [];
 
@@ -26,6 +30,14 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
     for (int i = 0; i < 30; i++) {
       data.add(Random().nextInt(100) + 1);
     }
+    _streamSubscription = AvailablePlacesSnapshot.listen((data) {
+      setState(() {
+        _data = data.docs
+            .map((DocumentSnapshot document) =>
+                document.data()! as Map<String, dynamic>)
+            .toList();
+      });
+    });
     super.initState();
   }
 
@@ -67,7 +79,7 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
           AvailablePlacesTypeBar(),
           Align(
               alignment: FractionalOffset.bottomCenter,
-              child: AvailablePlacesBottomscroller(data: data)),
+              child: AvailablePlacesBottomscroller(availablePlaces: _data)),
         ],
       ),
     );

@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
-  final List<int> data;
+  final List<Map<String, dynamic>> availablePlaces;
 
-  const AvailablePlacesBottomscroller({super.key, required this.data});
+  const AvailablePlacesBottomscroller(
+      {super.key, required this.availablePlaces});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -15,13 +16,11 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
 
 class _AvailablePlacesBottomscrollerState
     extends State<AvailablePlacesBottomscroller> {
-  late List<int> data;
   int _focusedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    data = widget.data;
   }
 
   void _onItemFocus(int index) {
@@ -37,7 +36,7 @@ class _AvailablePlacesBottomscrollerState
       padding: EdgeInsets.all(18),
       child: Column(
         children: [
-          Text("i:$index\n${data[index]}"),
+          Text("i:$index"),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -93,15 +92,15 @@ class _AvailablePlacesBottomscrollerState
       height: 250,
       color: Colors.transparent,
       child: ScrollSnapList(
-          clipBehavior: Clip.none,
-          margin: const EdgeInsets.only(bottom: 30),
-          onItemFocus: _onItemFocus,
-          itemSize: 260,
-          itemBuilder: _buildListItem,
-          itemCount: data.length,
-          dynamicItemSize: true,
-          dynamicSizeEquation: (distance) =>
-              1 - min(distance.abs() / 500, 0.2)),
+        clipBehavior: Clip.none,
+        margin: const EdgeInsets.only(bottom: 30),
+        onItemFocus: _onItemFocus,
+        itemSize: 260,
+        itemBuilder: _buildListItem,
+        dynamicItemSize: true,
+        dynamicSizeEquation: (distance) => 1 - min(distance.abs() / 500, 0.2),
+        itemCount: widget.availablePlaces.length,
+      ),
     );
   }
 }
