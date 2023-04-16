@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
+import '../model/parking_spot_model.dart';
+
 class AvailablePlacesBottomscroller extends StatefulWidget {
-  final List<Map<String, dynamic>> availablePlaces;
+  final List<ParkingSpotModel> availablePlaces;
 
   const AvailablePlacesBottomscroller(
       {super.key, required this.availablePlaces});
@@ -36,7 +38,8 @@ class _AvailablePlacesBottomscrollerState
       padding: EdgeInsets.all(18),
       child: Column(
         children: [
-          Text("i:$index"),
+          Text(
+              "i:$index\ncoordinates:${widget.availablePlaces[index].coordinate}\nid:${widget.availablePlaces[index].id}"),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,

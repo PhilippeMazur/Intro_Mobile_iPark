@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ipark/available_places/available_places_bottomscroller.dart';
 import 'package:ipark/available_places/available_places_typebar.dart';
+import 'package:ipark/model/parking_spot_model.dart';
 
 import 'available_places_map.dart';
 
@@ -21,7 +22,7 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
       FirebaseFirestore.instance.collection("parking_spots").snapshots();
   late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
       _streamSubscription;
-  List<Map<String, dynamic>> _data = [];
+  List<ParkingSpotModel> _data = [];
 
   List<int> data = [];
 
@@ -33,8 +34,8 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
     _streamSubscription = AvailablePlacesSnapshot.listen((data) {
       setState(() {
         _data = data.docs
-            .map((DocumentSnapshot document) =>
-                document.data()! as Map<String, dynamic>)
+            .map((DocumentSnapshot document) => ParkingSpotModel.fromMap(
+                document.data()! as Map<String, dynamic>))
             .toList();
       });
     });

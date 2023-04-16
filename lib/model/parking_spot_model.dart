@@ -5,10 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ParkingSpotModel {
   final String? id;
-  final GeoPoint coordinate;
+  final GeoPoint? coordinate;
+
   ParkingSpotModel({
     this.id,
-    required this.coordinate,
+    this.coordinate,
   });
 
   ParkingSpotModel copyWith({
