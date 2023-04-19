@@ -1,8 +1,15 @@
 ///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ipark/chooseLocation.dart';
+import 'package:ipark/login.dart';
 
 class Verhuren extends StatelessWidget {
+
+  static String adres = "Adres";
+  static GeoPoint geopoint = GeoPoint(0,0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +65,12 @@ class Verhuren extends StatelessWidget {
                             alignment: Alignment(0.0, 0.0),
                             child: IconButton(
                               icon: Icon(Icons.account_circle),
-                              onPressed: () {},
+                              onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => loginScreen()),
+                      );
+                    },
                               color: Color(0xff0b55c3),
                               iconSize: 50,
                             ),
@@ -129,7 +141,7 @@ class Verhuren extends StatelessWidget {
                           borderSide:
                               BorderSide(color: Color(0xff000000), width: 1),
                         ),
-                        hintText: "Adres",
+                        hintText: adres,
                         hintStyle: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
@@ -158,7 +170,12 @@ class Verhuren extends StatelessWidget {
                     ),
                   ),
                   MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChooseLocation()),
+                      );
+                    },
                     color: Color(0xff0956c8),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -358,7 +375,7 @@ class Verhuren extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(0, 65, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, 73, 0, 0),
                 padding: EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.14,
