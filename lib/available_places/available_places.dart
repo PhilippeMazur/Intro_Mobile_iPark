@@ -81,7 +81,7 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
       body: Stack(
         alignment: Alignment.topLeft,
         children: [
-          AvailablePlacesMap(),
+          AvailablePlacesMap(availablePlaces: _data),
           AvailablePlacesTypeBar(),
           Align(
               alignment: FractionalOffset.bottomCenter,
