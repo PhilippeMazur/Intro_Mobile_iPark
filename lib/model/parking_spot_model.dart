@@ -9,7 +9,7 @@ class ParkingSpotModel {
 
   ParkingSpotModel({
     this.id,
-    this.coordinate,
+    required this.coordinate,
   });
 
   ParkingSpotModel copyWith({

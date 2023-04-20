@@ -7,9 +7,12 @@ import '../model/parking_spot_model.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
+  final Function(int) dragToParkingSpot;
 
   const AvailablePlacesBottomscroller(
-      {super.key, required this.availablePlaces});
+      {super.key,
+      required this.availablePlaces,
+      required this.dragToParkingSpot});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -18,8 +21,6 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
 
 class _AvailablePlacesBottomscrollerState
     extends State<AvailablePlacesBottomscroller> {
-  int _focusedIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -27,7 +28,7 @@ class _AvailablePlacesBottomscrollerState
 
   void _onItemFocus(int index) {
     setState(() {
-      _focusedIndex = index;
+      widget.dragToParkingSpot(index);
     });
   }
 

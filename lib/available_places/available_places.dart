@@ -32,18 +32,31 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
       data.add(Random().nextInt(100) + 1);
     }
     _streamSubscription = AvailablePlacesSnapshot.listen((data) {
+      List<ParkingSpotModel> newSpots = [];
+      for (var map in data.docs) {
+        try {
+          var spot = ParkingSpotModel.fromMap(map.data());
+          newSpots.add(spot);
+        } catch (e) {
+          print('Skipping object');
+        }
+      }
       setState(() {
-        _data = data.docs
-            .map((DocumentSnapshot document) => ParkingSpotModel.fromMap(
-                document.data()! as Map<String, dynamic>))
-            .toList();
+        _data = newSpots;
       });
     });
     super.initState();
   }
 
+  dragToParkingSpot(int index) {
+    print(index);
+  }
+
+  focusToListItem() {}
+
   @override
   Widget build(BuildContext context) {
+    print(_data);
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -85,7 +98,9 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
           AvailablePlacesTypeBar(),
           Align(
               alignment: FractionalOffset.bottomCenter,
-              child: AvailablePlacesBottomscroller(availablePlaces: _data)),
+              child: AvailablePlacesBottomscroller(
+                  availablePlaces: _data,
+                  dragToParkingSpot: dragToParkingSpot)),
         ],
       ),
     );
