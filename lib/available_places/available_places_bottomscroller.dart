@@ -8,11 +8,13 @@ import '../model/parking_spot_model.dart';
 class AvailablePlacesBottomscroller extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
   final Function(int) dragToParkingSpot;
+  final GlobalKey<ScrollSnapListState>? snaplistKey;
 
   const AvailablePlacesBottomscroller(
       {super.key,
       required this.availablePlaces,
-      required this.dragToParkingSpot});
+      required this.dragToParkingSpot,
+      this.snaplistKey});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -104,6 +106,7 @@ class _AvailablePlacesBottomscrollerState
         dynamicItemSize: true,
         dynamicSizeEquation: (distance) => 1 - min(distance.abs() / 500, 0.2),
         itemCount: widget.availablePlaces.length,
+        key: widget.snaplistKey,
       ),
     );
   }

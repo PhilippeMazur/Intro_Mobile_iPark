@@ -9,6 +9,7 @@ import 'package:ipark/available_places/available_places_bottomscroller.dart';
 import 'package:ipark/available_places/available_places_typebar.dart';
 import 'package:ipark/model/parking_spot_model.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:scroll_snap_list/scroll_snap_list.dart';
 
 import 'available_places_map.dart';
 
@@ -31,6 +32,8 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   List<ParkingSpotModel> _data = [];
 
   List<int> data = [];
+
+  final GlobalKey<ScrollSnapListState> bottomscrollerKey = GlobalKey();
 
   @override
   void initState() {
@@ -64,7 +67,10 @@ class _AvailablePlacesState extends State<AvailablePlaces>
     }
   }
 
-  focusToListItem() {}
+  focusToListItem(int index) {
+    print(index);
+    bottomscrollerKey.currentState?.focusToItem(index);
+  }
 
   animatedMapMove(LatLng destLocation, double destZoom) {
     // Create some tweens. These serve to split up the transition from one location to another.
@@ -143,13 +149,16 @@ class _AvailablePlacesState extends State<AvailablePlaces>
           AvailablePlacesMap(
             availablePlaces: _data,
             mapController: _mapController,
+            snapToFunction: focusToListItem,
           ),
           AvailablePlacesTypeBar(),
           Align(
               alignment: FractionalOffset.bottomCenter,
               child: AvailablePlacesBottomscroller(
-                  availablePlaces: _data,
-                  dragToParkingSpot: dragToParkingSpot)),
+                availablePlaces: _data,
+                dragToParkingSpot: dragToParkingSpot,
+                snaplistKey: bottomscrollerKey,
+              )),
         ],
       ),
     );

@@ -9,8 +9,12 @@ import '../model/parking_spot_model.dart';
 class AvailablePlacesMap extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
   final MapController mapController;
+  final Function(int) snapToFunction;
   const AvailablePlacesMap(
-      {super.key, required this.availablePlaces, required this.mapController});
+      {super.key,
+      required this.availablePlaces,
+      required this.mapController,
+      required this.snapToFunction});
   @override
   State<AvailablePlacesMap> createState() => _AvailablePlacesMapState();
 }
@@ -40,16 +44,18 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
         ),
         MarkerLayer(
           markers: [
-            for (var spot in widget.availablePlaces)
-              if (spot.coordinate?.latitude != null &&
-                  spot.coordinate?.longitude != null)
+            for (int i = 0; i < widget.availablePlaces.length; i++)
+              if (widget.availablePlaces[i].coordinate?.latitude != null &&
+                  widget.availablePlaces[i].coordinate?.longitude != null)
                 Marker(
-                    point: LatLng(
-                        spot.coordinate!.latitude, spot.coordinate!.longitude),
-                    height: 50,
-                    anchorPos: AnchorPos.align(AnchorAlign.top),
-                    builder: (context) =>
-                        Image.asset("assets/images/mapMarker.png")),
+                  point: LatLng(widget.availablePlaces[i].coordinate!.latitude,
+                      widget.availablePlaces[i].coordinate!.longitude),
+                  height: 50,
+                  anchorPos: AnchorPos.align(AnchorAlign.top),
+                  builder: (context) => GestureDetector(
+                      onTap: () => widget.snapToFunction(i),
+                      child: Image.asset("assets/images/mapMarker.png")),
+                ),
           ],
         ),
       ],
