@@ -32,8 +32,11 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-          userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+          tileProvider: NetworkTileProvider(),
+          urlTemplate: 'http://mt{s}.google.com/vt/x={x}&y={y}&z={z}',
+          subdomains: const ['0', '1', '2', '3'],
+          retinaMode: true,
+          maxZoom: 22,
         ),
         MarkerLayer(
           markers: [
