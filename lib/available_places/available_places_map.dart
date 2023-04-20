@@ -8,24 +8,23 @@ import '../model/parking_spot_model.dart';
 
 class AvailablePlacesMap extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
-  const AvailablePlacesMap({super.key, required this.availablePlaces});
+  final MapController mapController;
+  const AvailablePlacesMap(
+      {super.key, required this.availablePlaces, required this.mapController});
   @override
   State<AvailablePlacesMap> createState() => _AvailablePlacesMapState();
 }
 
 class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
-  late final MapController _mapController;
-
   @override
   void initState() {
-    _mapController = MapController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: _mapController,
+      mapController: widget.mapController,
       options: MapOptions(
         center: LatLng(51.260197, 4.402771),
         zoom: 14,
