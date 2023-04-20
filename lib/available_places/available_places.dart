@@ -67,10 +67,15 @@ class _AvailablePlacesState extends State<AvailablePlaces> {
             color: Color(0xff000000),
           ),
         ),
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: Color(0xff212435),
-          size: 24,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xff212435),
+            size: 24,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       ),
       body: Stack(

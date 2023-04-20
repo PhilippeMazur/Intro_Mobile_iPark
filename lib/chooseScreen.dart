@@ -1,6 +1,7 @@
 ///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
 
 import 'package:flutter/material.dart';
+import 'package:ipark/available_places/available_places.dart';
 import 'package:ipark/verhuren.dart';
 
 class choosePage extends StatelessWidget {
@@ -25,11 +26,11 @@ class choosePage extends StatelessWidget {
             ),
             child: MaterialButton(
               onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Verhuren()),
-                      );
-                    },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Verhuren()),
+                );
+              },
               color: Color(0xffc9c9c9),
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -66,7 +67,13 @@ class choosePage extends StatelessWidget {
               child: Align(
                 alignment: Alignment(0.0, 1.0),
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AvailablePlaces()),
+                    );
+                  },
                   color: Color(0xff090fcf),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
