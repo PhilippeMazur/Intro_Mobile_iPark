@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:ipark/available_places.dart';
+import 'package:ipark/available_places/available_places.dart';
 import 'package:ipark/login.dart';
 import 'firebase_options.dart';
 
@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-
       home: loginScreen(),
     );
   }
