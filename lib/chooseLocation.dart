@@ -9,6 +9,7 @@ import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.
 
 class ChooseLocation extends StatefulWidget {
   const ChooseLocation({super.key});
+  
 
   @override
   State<ChooseLocation> createState() => _ChooseLocation();
@@ -27,6 +28,8 @@ class _ChooseLocation extends State<ChooseLocation> {
         buttonColor: Color.fromARGB(255, 8, 73, 171),
         buttonText: 'Zet huidige locatie',
         onPicked: (pickedData) {
+          List<String> addressParts = pickedData.address.split(",");
+          Verhuren.adresMinified = "${addressParts[1]} ${addressParts[0]}, ${addressParts[4]} ${addressParts[2]}";   
           Verhuren.adres = pickedData.address;
           Verhuren.geopoint = new GeoPoint(pickedData.latLong.latitude, pickedData.latLong.longitude);
           Navigator.push(

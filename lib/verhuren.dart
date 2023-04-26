@@ -3,12 +3,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/chooseLocation.dart';
+import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/login.dart';
 
 class Verhuren extends StatelessWidget {
 
   static String adres = "Adres";
+  static String adresMinified = "Adres";
+  static String size = "not specified";
   static GeoPoint geopoint = GeoPoint(0,0);
+  final TextEditingController vanController = TextEditingController();
+  final TextEditingController totController = TextEditingController();
+  final TextEditingController sizeController = TextEditingController();
+
+
+  Future<void> saveData() async {
+  await FirebaseFirestore.instance.collection("parking_spots").add({
+    "coordinate": geopoint,
+    "from": vanController.text,
+    "until": totController.text,
+    "date_published":DateTime.now(),
+    "address": adresMinified,
+    "size": sizeController.text
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +248,7 @@ class Verhuren extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                             child: TextField(
-                              controller: TextEditingController(),
+                              controller: vanController,
                               obscureText: false,
                               textAlign: TextAlign.left,
                               maxLines: 1,
@@ -300,14 +318,14 @@ class Verhuren extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                             child: TextField(
-                              controller: TextEditingController(),
+                              controller: totController,
                               obscureText: false,
                               textAlign: TextAlign.start,
                               maxLines: 1,
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: Color(0xff000000),
                               ),
                               decoration: InputDecoration(
@@ -348,9 +366,85 @@ class Verhuren extends StatelessWidget {
                     ),
                   ),
                   Padding(
+                    padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          "Grootte: ",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 10,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: TextField(
+                              controller: sizeController,
+                              obscureText: false,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 12,
+                                color: Color(0xff000000),
+                              ),
+                              decoration: InputDecoration(
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(80.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff000000), width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(80.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff000000), width: 1),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(80.0),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff000000), width: 1),
+                                ),
+                                hintText: "Klein - Medium - Groot",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 12,
+                                  color: Color(0xff949494),
+                                ),
+                                filled: true,
+                                fillColor: Color(0xfff2f2f3),
+                                isDense: false,
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                suffixIcon: Icon(Icons.switch_left_rounded,
+                                    color: Color(0xff212435), size: 24),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
                     child: MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        saveData();
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => choosePage()),
+                      );
+                      },
                       color: Color(0xff0956c8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -375,7 +469,7 @@ class Verhuren extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(0, 73, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 padding: EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.14,
