@@ -5,8 +5,34 @@
 import 'package:flutter/material.dart';
 import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class loginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+   Future<void> _checkCredentials(BuildContext context) async {
+    try {
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      print('succeeded');
+      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => choosePage()),
+                      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('not succeeded');
+
+      } else if (e.code == 'wrong-password') {
+        print('not succeeded');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +75,7 @@ class loginScreen extends StatelessWidget {
                   ),
                 ),
                 TextField(
-                  controller: TextEditingController(text: "example@gmail.com"),
+                  controller: emailController,
                   obscureText: false,
                   textAlign: TextAlign.start,
                   maxLines: 1,
@@ -98,7 +124,7 @@ class loginScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                   child: TextField(
-                    controller: TextEditingController(text: "123456"),
+                    controller: passwordController,
                     obscureText: true,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -151,10 +177,7 @@ class loginScreen extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
                   child: MaterialButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => choosePage()),
-                      );
+                      _checkCredentials(context);
                     },
                     color: Color(0xff091abd),
                     elevation: 0,
