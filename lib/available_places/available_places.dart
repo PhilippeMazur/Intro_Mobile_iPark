@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +51,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
         _data = newSpots;
       });
     });
+
     super.initState();
   }
 
