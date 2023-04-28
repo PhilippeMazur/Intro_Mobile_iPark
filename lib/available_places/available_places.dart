@@ -10,6 +10,7 @@ import 'package:ipark/model/parking_spot_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
+import '../main.dart';
 import 'available_places_map.dart';
 
 class AvailablePlaces extends StatefulWidget {
@@ -33,6 +34,15 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   List<int> data = [];
 
   final GlobalKey<ScrollSnapListState> bottomscrollerKey = GlobalKey();
+
+  late LatLng chosenAddress;
+
+  setNewAddress(LatLng newAddress) {
+    setState(() {
+      chosenAddress = newAddress;
+    });
+    logger.d(newAddress);
+  }
 
   @override
   void initState() {
@@ -108,7 +118,6 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   @override
   Widget build(BuildContext context) {
-    print(_data);
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -151,7 +160,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
             mapController: _mapController,
             snapToFunction: focusToListItem,
           ),
-          AvailablePlacesTypeBar(),
+          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
           Align(
               alignment: FractionalOffset.bottomCenter,
               child: AvailablePlacesBottomscroller(

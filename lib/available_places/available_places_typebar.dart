@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 
 import '../main.dart';
 
 class AvailablePlacesTypeBar extends StatefulWidget {
-  const AvailablePlacesTypeBar({super.key});
+  final Function(LatLng) changeChosenAddress;
+  const AvailablePlacesTypeBar({super.key, required this.changeChosenAddress});
 
   @override
   State<AvailablePlacesTypeBar> createState() => _AvailablePlacesTypeBarState();
@@ -101,7 +103,7 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
                   obscureText: false,
                   textAlign: TextAlign.start,
                   maxLines: 1,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontStyle: FontStyle.normal,
                     fontSize: 14,
@@ -113,13 +115,13 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
                       borderSide: BorderSide.none,
                     ),
                     hintText: "Enter adress",
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       fontSize: 14,
                       color: Color(0xff000000),
                     ),
-                    contentPadding: EdgeInsets.fromLTRB(15, 8, 12, 8),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 8, 12, 8),
                   ),
                 ),
               ),
@@ -127,7 +129,7 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
+          margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
@@ -147,17 +149,13 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(formatAddress(addresses[index])),
-                    // subtitle:
-                    //     Text('${addresses[index].lat},${addresses[index].lon}'),
                     onTap: () {
-                      // _mapController.move(
-                      //     LatLng(
-                      //         addresses[index].lat, addresses[index].lon),
-                      //     15.0);
-
-                      // _focusNode.unfocus();
-                      // addresses.clear();
-                      // setState(() {});
+                      widget.changeChosenAddress(LatLng(
+                          double.parse(addresses[index]["lat"]),
+                          double.parse(addresses[index]["lon"])));
+                      setState(() {
+                        addresses = [];
+                      });
                     },
                   );
                 });
