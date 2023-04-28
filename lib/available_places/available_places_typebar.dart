@@ -14,6 +14,9 @@ class AvailablePlacesTypeBar extends StatefulWidget {
 }
 
 class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
+  static final TextEditingController _inputAddressController =
+      TextEditingController();
+
   List<dynamic> addresses = <dynamic>[];
   Timer? _debounce;
 
@@ -30,11 +33,12 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
     }
   }
 
-  void fetchAdresses(String value) {
+  void fetchAdresses() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 2000), () async {
       try {
+        String value = _inputAddressController.text;
         String url =
             'https://nominatim.openstreetmap.org/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
         logger.d(url);
@@ -48,6 +52,18 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
       }
       setState(() {});
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _inputAddressController.addListener(fetchAdresses);
+  }
+
+  @override
+  void dispose() {
+    _inputAddressController.dispose();
+    super.dispose();
   }
 
   @override
@@ -81,33 +97,31 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
               ),
               Expanded(
                 child: TextField(
-                    controller: TextEditingController(),
-                    obscureText: false,
-                    textAlign: TextAlign.start,
-                    maxLines: 1,
-                    style: TextStyle(
+                  controller: _inputAddressController,
+                  obscureText: false,
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14,
+                    color: Color(0xff000000),
+                  ),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(200.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    hintText: "Enter adress",
+                    hintStyle: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       fontSize: 14,
                       color: Color(0xff000000),
                     ),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(200.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: "Enter adress",
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
-                      ),
-                      contentPadding: EdgeInsets.fromLTRB(15, 8, 12, 8),
-                    ),
-                    onChanged: (String value) {
-                      fetchAdresses(value);
-                    }),
+                    contentPadding: EdgeInsets.fromLTRB(15, 8, 12, 8),
+                  ),
+                ),
               ),
             ],
           ),
