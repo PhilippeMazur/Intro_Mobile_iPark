@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
 import '../model/parking_spot_model.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
@@ -45,6 +46,7 @@ class _AvailablePlacesBottomscrollerState
     // If the file exists in the cache, read and return it as JSON
     if (await file.exists()) {
       final jsonString = await file.readAsString();
+      logger.d("request from cache");
       return json.decode(jsonString);
     }
 
@@ -67,7 +69,6 @@ class _AvailablePlacesBottomscrollerState
 
     // Make an HTTP request to the Nominatim API
     final response = await fetchJson(apiUrl);
-    print(response);
 
     // Parse the response body to extract the address
     //final json = jsonDecode(response);

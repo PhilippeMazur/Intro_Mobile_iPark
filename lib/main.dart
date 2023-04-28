@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ipark/available_places/available_places.dart';
 import 'package:ipark/login.dart';
+import 'package:logger/logger.dart';
 import 'firebase_options.dart';
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
