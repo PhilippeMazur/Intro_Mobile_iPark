@@ -10,11 +10,13 @@ class AvailablePlacesMap extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
   final MapController mapController;
   final Function(int) snapToFunction;
+  final LatLng? userLocation;
   const AvailablePlacesMap(
       {super.key,
       required this.availablePlaces,
       required this.mapController,
-      required this.snapToFunction});
+      required this.snapToFunction,
+      required this.userLocation});
   @override
   State<AvailablePlacesMap> createState() => _AvailablePlacesMapState();
 }
@@ -23,6 +25,32 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
   @override
   void initState() {
     super.initState();
+  }
+
+  List<Marker> getMarkers() {
+    List<Marker> markers = <Marker>[];
+
+    if (widget.userLocation != null) {
+      markers.add(Marker(
+        point: widget.userLocation!,
+        builder: (context) => GestureDetector(child: Icon(Icons.circle)),
+      ));
+    }
+    for (int i = 0; i < widget.availablePlaces.length; i++) {
+      if (widget.availablePlaces[i].coordinate?.latitude != null &&
+          widget.availablePlaces[i].coordinate?.longitude != null) {
+        markers.add(Marker(
+          point: LatLng(widget.availablePlaces[i].coordinate!.latitude,
+              widget.availablePlaces[i].coordinate!.longitude),
+          height: 50,
+          anchorPos: AnchorPos.align(AnchorAlign.top),
+          builder: (context) => GestureDetector(
+              onTap: () => widget.snapToFunction(i),
+              child: Image.asset("assets/images/mapMarker.png")),
+        ));
+      }
+    }
+    return markers;
   }
 
   @override
@@ -42,22 +70,7 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
           retinaMode: true,
           maxZoom: 22,
         ),
-        MarkerLayer(
-          markers: [
-            for (int i = 0; i < widget.availablePlaces.length; i++)
-              if (widget.availablePlaces[i].coordinate?.latitude != null &&
-                  widget.availablePlaces[i].coordinate?.longitude != null)
-                Marker(
-                  point: LatLng(widget.availablePlaces[i].coordinate!.latitude,
-                      widget.availablePlaces[i].coordinate!.longitude),
-                  height: 50,
-                  anchorPos: AnchorPos.align(AnchorAlign.top),
-                  builder: (context) => GestureDetector(
-                      onTap: () => widget.snapToFunction(i),
-                      child: Image.asset("assets/images/mapMarker.png")),
-                ),
-          ],
-        ),
+        MarkerLayer(markers: getMarkers()),
       ],
     );
   }

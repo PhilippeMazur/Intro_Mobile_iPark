@@ -35,7 +35,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   final GlobalKey<ScrollSnapListState> bottomscrollerKey = GlobalKey();
 
-  late LatLng chosenAddress;
+  late LatLng? chosenAddress;
 
   setNewAddress(LatLng newAddress) {
     setState(() {
@@ -63,6 +63,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
     });
 
     super.initState();
+    chosenAddress = null;
   }
 
   dragToParkingSpot(int index) {
@@ -159,6 +160,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
             availablePlaces: _data,
             mapController: _mapController,
             snapToFunction: focusToListItem,
+            userLocation: chosenAddress,
           ),
           AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
           Align(
