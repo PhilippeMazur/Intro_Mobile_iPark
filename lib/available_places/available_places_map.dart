@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../main.dart';
 import '../model/parking_spot_model.dart';
 
 class AvailablePlacesMap extends StatefulWidget {
@@ -11,12 +12,14 @@ class AvailablePlacesMap extends StatefulWidget {
   final MapController mapController;
   final Function(int) snapToFunction;
   final LatLng? userLocation;
+  final int scrollbarIndex;
   const AvailablePlacesMap(
       {super.key,
       required this.availablePlaces,
       required this.mapController,
       required this.snapToFunction,
-      required this.userLocation});
+      required this.userLocation,
+      required this.scrollbarIndex});
   @override
   State<AvailablePlacesMap> createState() => _AvailablePlacesMapState();
 }
@@ -42,7 +45,8 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
         markers.add(Marker(
           point: LatLng(widget.availablePlaces[i].coordinate!.latitude,
               widget.availablePlaces[i].coordinate!.longitude),
-          height: 50,
+          height: markerHeight(i),
+          width: 1000,
           anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context) => GestureDetector(
               onTap: () => widget.snapToFunction(i),
@@ -51,6 +55,12 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
       }
     }
     return markers;
+  }
+
+  double markerHeight(int drawIndex) {
+    logger.d(widget.scrollbarIndex);
+    if (widget.scrollbarIndex == drawIndex) return 60;
+    return 40;
   }
 
   @override

@@ -37,6 +37,8 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   late LatLng? userLocation;
 
+  int currentIndex = 0;
+
   setNewAddress(LatLng newAddress) {
     setState(() {
       userLocation = newAddress;
@@ -70,6 +72,9 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   }
 
   dragToParkingSpot(int index) {
+    setState(() {
+      currentIndex = index;
+    });
     ParkingSpotModel spot = _data[index];
     if (spot.coordinate?.latitude != null &&
         spot.coordinate?.longitude != null) {
@@ -90,6 +95,9 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   focusToListItem(int index) {
     print(index);
+    setState(() {
+      currentIndex = index;
+    });
     bottomscrollerKey.currentState?.focusToItem(index);
   }
 
@@ -171,6 +179,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
             mapController: _mapController,
             snapToFunction: focusToListItem,
             userLocation: userLocation,
+            scrollbarIndex: currentIndex,
           ),
           Align(
               alignment: FractionalOffset.bottomCenter,

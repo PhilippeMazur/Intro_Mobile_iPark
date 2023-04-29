@@ -50,7 +50,7 @@ class _AvailablePlacesBottomscrollerState
     // If the file exists in the cache, read and return it as JSON
     if (await file.exists()) {
       final jsonString = await file.readAsString();
-      logger.d("request from cache");
+      //logger.d("request from cache");
       return json.decode(jsonString);
     }
 
