@@ -81,13 +81,6 @@ class _AvailablePlacesState extends State<AvailablePlaces>
       LatLng center =
           LatLng(spot.coordinate!.latitude, spot.coordinate!.longitude);
 
-      //replace but because of bottomscroller
-      Distance distance = Distance();
-      double latitudeDistance =
-          (_mapController.bounds!.north - _mapController.bounds!.south).abs();
-      logger.i(_mapController.bounds!.north);
-      center.latitude -= latitudeDistance / 7;
-
       //replace
       animatedMapMove(center, _mapController.zoom);
     }
@@ -102,10 +95,16 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   }
 
   animatedMapMove(LatLng destLocation, double destZoom) {
+    //replace but because of bottomscroller
+    double latitudeDistance =
+        (_mapController.bounds!.north - _mapController.bounds!.south).abs();
+    double offset = latitudeDistance / 7;
+
     // Create some tweens. These serve to split up the transition from one location to another.
     // In our case, we want to split the transition be<tween> our current map center and the destination.
     final latTween = Tween<double>(
-        begin: _mapController.center.latitude, end: destLocation.latitude);
+        begin: _mapController.center.latitude,
+        end: destLocation.latitude - offset);
     final lngTween = Tween<double>(
         begin: _mapController.center.longitude, end: destLocation.longitude);
     final zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
