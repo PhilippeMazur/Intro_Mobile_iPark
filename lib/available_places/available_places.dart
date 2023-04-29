@@ -35,12 +35,15 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   final GlobalKey<ScrollSnapListState> bottomscrollerKey = GlobalKey();
 
-  late LatLng? chosenAddress;
+  late LatLng? userLocation;
 
   setNewAddress(LatLng newAddress) {
     setState(() {
-      chosenAddress = newAddress;
+      userLocation = newAddress;
     });
+    if (userLocation != null) {
+      animatedMapMove(userLocation!, _mapController.zoom);
+    }
     logger.d(newAddress);
   }
 
@@ -63,17 +66,24 @@ class _AvailablePlacesState extends State<AvailablePlaces>
     });
 
     super.initState();
-    chosenAddress = null;
+    userLocation = null;
   }
 
   dragToParkingSpot(int index) {
-    print(index);
     ParkingSpotModel spot = _data[index];
     if (spot.coordinate?.latitude != null &&
         spot.coordinate?.longitude != null) {
       LatLng center =
           LatLng(spot.coordinate!.latitude, spot.coordinate!.longitude);
-      print(center);
+
+      //replace but because of bottomscroller
+      Distance distance = Distance();
+      double latitudeDistance =
+          (_mapController.bounds!.north - _mapController.bounds!.south).abs();
+      logger.i(_mapController.bounds!.north);
+      center.latitude -= latitudeDistance / 7;
+
+      //replace
       animatedMapMove(center, _mapController.zoom);
     }
   }
@@ -160,16 +170,17 @@ class _AvailablePlacesState extends State<AvailablePlaces>
             availablePlaces: _data,
             mapController: _mapController,
             snapToFunction: focusToListItem,
-            userLocation: chosenAddress,
+            userLocation: userLocation,
           ),
-          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
           Align(
               alignment: FractionalOffset.bottomCenter,
               child: AvailablePlacesBottomscroller(
                 availablePlaces: _data,
                 dragToParkingSpot: dragToParkingSpot,
                 snaplistKey: bottomscrollerKey,
+                userLocation: userLocation,
               )),
+          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
         ],
       ),
     );

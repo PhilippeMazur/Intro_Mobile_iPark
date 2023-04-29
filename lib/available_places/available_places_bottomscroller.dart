@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,12 +16,14 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
   final Function(int) dragToParkingSpot;
   final GlobalKey<ScrollSnapListState>? snaplistKey;
+  final LatLng? userLocation;
 
   const AvailablePlacesBottomscroller(
       {super.key,
       required this.availablePlaces,
       required this.dragToParkingSpot,
-      this.snaplistKey});
+      this.snaplistKey,
+      required this.userLocation});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -29,6 +32,7 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
 
 class _AvailablePlacesBottomscrollerState
     extends State<AvailablePlacesBottomscroller> {
+  final Distance distance = Distance();
   @override
   void initState() {
     super.initState();
@@ -60,6 +64,14 @@ class _AvailablePlacesBottomscrollerState
     );
 
     return json.decode(utf8.decode(jsonData));
+  }
+
+  String distanceToUserLocation(GeoPoint databaseRecordPoint) {
+    LatLng databaseRecordPointLatLng =
+        LatLng(databaseRecordPoint.latitude, databaseRecordPoint.longitude);
+    double distanceKilometers = distance.as(
+        LengthUnit.Meter, databaseRecordPointLatLng, widget.userLocation!);
+    return (distanceKilometers / 1000).toStringAsFixed(3);
   }
 
   Future<dynamic> getAddressFromGeoPoint(GeoPoint geoPoint) async {
@@ -105,10 +117,16 @@ class _AvailablePlacesBottomscrollerState
       ),
       child: Column(
         children: [
-          Text(
-            "1.06km",
-            textAlign: TextAlign.left,
-          ),
+          if (widget.userLocation != null &&
+              widget.availablePlaces[index].coordinate != null)
+            Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.fromLTRB(10, 0, 0, 5),
+              child: Text(
+                "${distanceToUserLocation(widget.availablePlaces[index].coordinate!)} km",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: Row(
