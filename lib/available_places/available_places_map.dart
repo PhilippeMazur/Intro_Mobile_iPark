@@ -25,8 +25,21 @@ class AvailablePlacesMap extends StatefulWidget {
 }
 
 class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
+  late double _aspectRatio;
+
   @override
   void initState() {
+    // Load the image and get its dimensions
+    AssetImage imageProvider = AssetImage("assets/images/mapMarker.png");
+    ImageStream imageStream = imageProvider.resolve(ImageConfiguration.empty);
+    imageStream.addListener(ImageStreamListener((imageInfo, _) {
+      setState(() {
+        // Calculate the aspect ratio of the image
+        double width = imageInfo.image.width.toDouble();
+        double height = imageInfo.image.height.toDouble();
+        _aspectRatio = width / height;
+      });
+    }, onError: (_, __) {}));
     super.initState();
   }
 
@@ -46,7 +59,7 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
           point: LatLng(widget.availablePlaces[i].coordinate!.latitude,
               widget.availablePlaces[i].coordinate!.longitude),
           height: markerHeight(i),
-          width: 1000,
+          width: markerHeight(i) * _aspectRatio,
           anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context) => GestureDetector(
               onTap: () => widget.snapToFunction(i),
