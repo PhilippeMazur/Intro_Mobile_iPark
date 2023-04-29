@@ -69,9 +69,9 @@ class _AvailablePlacesBottomscrollerState
   String distanceToUserLocation(GeoPoint databaseRecordPoint) {
     LatLng databaseRecordPointLatLng =
         LatLng(databaseRecordPoint.latitude, databaseRecordPoint.longitude);
-    double distanceKilometers = distance.as(
+    double distanceMeters = distance.as(
         LengthUnit.Meter, databaseRecordPointLatLng, widget.userLocation!);
-    return (distanceKilometers / 1000).toStringAsFixed(3);
+    return (distanceMeters / 1000).toStringAsFixed(3);
   }
 
   Future<dynamic> getAddressFromGeoPoint(GeoPoint geoPoint) async {

@@ -39,14 +39,26 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   int currentIndex = 0;
 
+  Distance distance = Distance();
+
   setNewAddress(LatLng newAddress) {
     setState(() {
       userLocation = newAddress;
+      _data.sort((a, b) => distanceToUserLocation(a.coordinate)
+          .compareTo(distanceToUserLocation(b.coordinate)));
+      ;
     });
     if (userLocation != null) {
       animatedMapMove(userLocation!, _mapController.zoom);
     }
     logger.d(newAddress);
+  }
+
+  double distanceToUserLocation(GeoPoint databaseRecordPoint) {
+    LatLng databaseRecordPointLatLng =
+        LatLng(databaseRecordPoint.latitude, databaseRecordPoint.longitude);
+    return distance.as(
+        LengthUnit.Meter, databaseRecordPointLatLng, userLocation!);
   }
 
   @override
@@ -61,6 +73,10 @@ class _AvailablePlacesState extends State<AvailablePlaces>
         } catch (e) {
           print('Skipping object');
         }
+      }
+      if (userLocation != null) {
+        newSpots.sort((a, b) => distanceToUserLocation(a.coordinate)
+            .compareTo(distanceToUserLocation(b.coordinate)));
       }
       setState(() {
         _data = newSpots;
