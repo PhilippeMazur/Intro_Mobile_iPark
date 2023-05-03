@@ -1,6 +1,7 @@
 ///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/chooseLocation.dart';
 import 'package:ipark/chooseScreen.dart';
@@ -15,6 +16,7 @@ class Verhuren extends StatelessWidget {
   final TextEditingController vanController = TextEditingController();
   final TextEditingController totController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
+  FirebaseAuth auth = FirebaseAuth.instance;
 
 
   Future<void> saveData() async {
@@ -24,7 +26,8 @@ class Verhuren extends StatelessWidget {
     "until": totController.text,
     "date_published":DateTime.now(),
     "address": adresMinified,
-    "size": sizeController.text
+    "size": sizeController.text,
+    "user_uid": auth.currentUser?.uid 
   });
 }
 

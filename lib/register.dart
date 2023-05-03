@@ -2,10 +2,54 @@
 
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/login.dart';
 
+import 'chooseScreen.dart';
+
 class register extends StatelessWidget {
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+    Future<void> saveData() async {
+  await FirebaseFirestore.instance.collection("accounts").add({
+    "username": usernameController.text,
+    "email": emailController.text,
+    "user_uid": auth.currentUser?.uid 
+  });
+}
+
+  Future<void> registerUser(BuildContext context) async {
+    try {
+  UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+    email: emailController.text,
+    password: passwordController.text,
+  );
+  saveData();
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => choosePage()),
+                        
+                      );
+
+  // User is created successfully
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'weak-password') {
+    print('The password provided is too weak.');
+  } else if (e.code == 'email-already-in-use') {
+    print('The account already exists for that email.');
+  }
+} catch (e) {
+  print(e);
+}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +102,7 @@ class register extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TextField(
-                        controller: TextEditingController(text: "john"),
+                        controller: usernameController,
                         obscureText: false,
                         textAlign: TextAlign.start,
                         maxLines: 1,
@@ -111,7 +155,7 @@ class register extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                         child: TextField(
                           controller:
-                              TextEditingController(text: "john@gmail.com"),
+                              emailController,
                           obscureText: false,
                           textAlign: TextAlign.start,
                           maxLines: 1,
@@ -164,7 +208,7 @@ class register extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                         child: TextField(
-                          controller: TextEditingController(text: "12345678"),
+                          controller: passwordController,
                           obscureText: true,
                           textAlign: TextAlign.start,
                           maxLines: 1,
@@ -218,10 +262,7 @@ class register extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: MaterialButton(
                           onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => loginScreen()),
-                      );
+                      registerUser(context);
                     },
                           color: Color(0xff0c2dd5),
                           elevation: 0,
