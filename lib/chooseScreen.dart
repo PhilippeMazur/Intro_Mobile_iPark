@@ -26,11 +26,11 @@ class choosePage extends StatelessWidget {
             ),
             child: MaterialButton(
               onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Verhuren()),
-                      );
-                    },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Verhuren()),
+                );
+              },
               color: Color(0xffc9c9c9),
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -67,12 +67,13 @@ class choosePage extends StatelessWidget {
               child: Align(
                 alignment: Alignment(0.0, 1.0),
                 child: MaterialButton(
-                   onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AvailablePlaces()),
-                      );
-                    },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AvailablePlaces()),
+                    );
+                  },
                   color: Color(0xff090fcf),
                   elevation: 0,
                   shape: RoundedRectangleBorder(

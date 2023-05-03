@@ -1,70 +1,167 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
+
+import '../main.dart';
 
 class AvailablePlacesTypeBar extends StatefulWidget {
-  const AvailablePlacesTypeBar({super.key});
+  final Function(LatLng) changeChosenAddress;
+  const AvailablePlacesTypeBar({super.key, required this.changeChosenAddress});
 
   @override
   State<AvailablePlacesTypeBar> createState() => _AvailablePlacesTypeBarState();
 }
 
 class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
+  static final TextEditingController _inputAddressController =
+      TextEditingController();
+
+  List<dynamic> addresses = <dynamic>[];
+  Timer? _debounce;
+
+  String formatAddress(dynamic nominatimResponse) {
+    try {
+      dynamic address = nominatimResponse["address"];
+      if (address == null) return "error";
+      String townOrCity =
+          address["town"] ?? address["city"] ?? address["village"];
+      return '${address["road"] ?? ""} ${address["house_number"] ?? ""}, ${address["postcode"] ?? ""} $townOrCity';
+    } catch (e) {
+      logger.e(e);
+      return "er ging iets mis";
+    }
+  }
+
+  void fetchAdresses() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 2000), () async {
+      try {
+        String value = _inputAddressController.text;
+        String url =
+            'https://nominatim.openstreetmap.org/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
+        logger.d(url);
+
+        var response = await http.get(Uri.parse(url));
+        var decodedResponse =
+            jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        setState(() => addresses = decodedResponse);
+      } catch (e) {
+        logger.e(e);
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _inputAddressController.addListener(fetchAdresses);
+  }
+
+  @override
+  void dispose() {
+    _inputAddressController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 15),
-      margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(250.0),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 2),
-            blurRadius: 10.0,
-            color: Colors.black.withOpacity(0.5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const Icon(
-            Icons.location_on,
-            color: Color.fromARGB(255, 0, 152, 217),
-            size: 32.0,
-            semanticLabel: 'Text to announce in accessibility modes',
-          ),
-          Expanded(
-            child: TextField(
-              controller: TextEditingController(),
-              obscureText: false,
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                fontSize: 14,
-                color: Color(0xff000000),
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(left: 15),
+          margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(250.0),
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 2),
+                blurRadius: 10.0,
+                color: Colors.black.withOpacity(0.5),
               ),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(200.0),
-                  borderSide: BorderSide.none,
-                ),
-                hintText: "Enter adress",
-                hintStyle: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 14,
-                  color: Color(0xff000000),
-                ),
-                contentPadding: EdgeInsets.fromLTRB(15, 8, 12, 8),
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Icon(
+                Icons.location_on,
+                color: Color.fromARGB(255, 0, 152, 217),
+                size: 32.0,
+                semanticLabel: 'Text to announce in accessibility modes',
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _inputAddressController,
+                  obscureText: false,
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14,
+                    color: Color(0xff000000),
+                  ),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(200.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    hintText: "Enter adress",
+                    hintStyle: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 14,
+                      color: Color(0xff000000),
+                    ),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 8, 12, 8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 2),
+                blurRadius: 10.0,
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ],
+          ),
+          child: StatefulBuilder(builder: ((context, setState) {
+            return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: addresses.length > 5 ? 5 : addresses.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(formatAddress(addresses[index])),
+                    onTap: () {
+                      widget.changeChosenAddress(LatLng(
+                          double.parse(addresses[index]["lat"]),
+                          double.parse(addresses[index]["lon"])));
+                      setState(() {
+                        addresses = [];
+                      });
+                    },
+                  );
+                });
+          })),
+        ),
+      ],
     );
   }
 }
