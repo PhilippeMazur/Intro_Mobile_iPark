@@ -11,25 +11,58 @@ class loginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Failed'),
+          content: const Text('email or password is incorrect'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
    Future<void> _checkCredentials(BuildContext context) async {
+   FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      final UserCredential userCredential =
+      if(!emailController.text.contains("@") || !emailController.text.contains(".") || passwordController.text == "") {
+        _dialogBuilder(context);
+      } else {
+          final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      print('succeeded');
+      // ignore: use_build_context_synchronously
       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => choosePage()),
-                      );
+                      );    
+      }
+      
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('not succeeded');
-
+        _dialogBuilder(context);
       } else if (e.code == 'wrong-password') {
         print('not succeeded');
+        _dialogBuilder(context);
       }
+    } on Exception catch(e) {
+    _dialogBuilder(context);
     }
   }
 
