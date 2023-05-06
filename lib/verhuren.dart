@@ -7,29 +7,28 @@ import 'package:ipark/chooseLocation.dart';
 import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/login.dart';
 
-class Verhuren extends StatelessWidget {
+import 'model/parking_spot_model.dart';
 
+class Verhuren extends StatelessWidget {
   static String adres = "Adres";
   static String adresMinified = "Adres";
   static String size = "not specified";
-  static GeoPoint geopoint = GeoPoint(0,0);
+  static GeoPoint geopoint = GeoPoint(0, 0);
   final TextEditingController vanController = TextEditingController();
   final TextEditingController totController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
   FirebaseAuth auth = FirebaseAuth.instance;
 
-
   Future<void> saveData() async {
-  await FirebaseFirestore.instance.collection("parking_spots").add({
-    "coordinate": geopoint,
-    "from": vanController.text,
-    "until": totController.text,
-    "date_published":DateTime.now(),
-    "address": adresMinified,
-    "size": sizeController.text,
-    "user_uid": auth.currentUser?.uid 
-  });
-}
+    await FirebaseFirestore.instance.collection("parking_spots").add(
+        ParkingSpotModel(
+                coordinate: geopoint,
+                from: vanController.text,
+                size: sizeController.text,
+                until: totController.text,
+                user_uid: auth.currentUser!.uid)
+            .toMap());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +73,8 @@ class Verhuren extends StatelessWidget {
                       children: [
                         ///***If you have exported images you must have to copy those images in assets/images directory.
                         Image(
-                          image:
-                              AssetImage("../assets/images/intromobilelogo.png"),
+                          image: AssetImage(
+                              "../assets/images/intromobilelogo.png"),
                           height: 60,
                           width: 100,
                           fit: BoxFit.contain,
@@ -87,11 +86,12 @@ class Verhuren extends StatelessWidget {
                             child: IconButton(
                               icon: Icon(Icons.account_circle),
                               onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => loginScreen()),
-                      );
-                    },
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => loginScreen()),
+                                );
+                              },
                               color: Color(0xff0b55c3),
                               iconSize: 50,
                             ),
@@ -184,7 +184,8 @@ class Verhuren extends StatelessWidget {
 
                         ///***If you have exported images you must have to copy those images in assets/images directory.
                         Image(
-                      image: AssetImage("../assets/images/voorbeeldfotomap.png"),
+                      image:
+                          AssetImage("../assets/images/voorbeeldfotomap.png"),
                       height: 100,
                       width: 230,
                       fit: BoxFit.cover,
@@ -194,7 +195,8 @@ class Verhuren extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ChooseLocation()),
+                        MaterialPageRoute(
+                            builder: (context) => ChooseLocation()),
                       );
                     },
                     color: Color(0xff0956c8),
@@ -444,9 +446,9 @@ class Verhuren extends StatelessWidget {
                       onPressed: () {
                         saveData();
                         Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => choosePage()),
-                      );
+                          context,
+                          MaterialPageRoute(builder: (context) => choosePage()),
+                        );
                       },
                       color: Color(0xff0956c8),
                       elevation: 0,

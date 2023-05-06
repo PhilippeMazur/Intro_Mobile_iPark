@@ -16,8 +16,7 @@ class AvailablePlacesTypeBar extends StatefulWidget {
 }
 
 class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
-  static final TextEditingController _inputAddressController =
-      TextEditingController();
+  final TextEditingController _inputAddressController = TextEditingController();
 
   List<dynamic> addresses = <dynamic>[];
   Timer? _debounce;

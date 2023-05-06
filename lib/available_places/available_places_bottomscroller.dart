@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_const
+
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -10,6 +12,7 @@ import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
+import '../model/account.dart';
 import '../model/parking_spot_model.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
@@ -42,6 +45,29 @@ class _AvailablePlacesBottomscrollerState
     setState(() {
       widget.dragToParkingSpot(index);
     });
+  }
+
+  Future<Account?> getAccount(String userUid) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('accounts')
+          .where('user_uid', isEqualTo: userUid)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final account = Account.fromMap(
+          querySnapshot.docs.first.data(),
+        );
+        logger.d(account);
+        return account;
+      } else {
+        logger.e("user not found");
+        return null;
+      }
+    } catch (e) {
+      logger.e("something went wrong");
+      return null;
+    }
   }
 
   Future<dynamic> fetchJson(String url) async {
@@ -98,7 +124,7 @@ class _AvailablePlacesBottomscrollerState
     //horizontal
     return Container(
       width: 260,
-      padding: EdgeInsets.all(18),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(
@@ -111,20 +137,20 @@ class _AvailablePlacesBottomscrollerState
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 10,
-            offset: Offset(0, 2), // changes position of shadow
+            offset: const Offset(0, 2), // changes position of shadow
           ),
         ],
       ),
       child: Column(
         children: [
-          if (widget.userLocation != null &&
-              widget.availablePlaces[index].coordinate != null)
+          if (widget.userLocation != null)
             Container(
               alignment: Alignment.topLeft,
-              padding: EdgeInsets.fromLTRB(10, 0, 0, 5),
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 5),
               child: Text(
-                "${distanceToUserLocation(widget.availablePlaces[index].coordinate!)} km",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                "${distanceToUserLocation(widget.availablePlaces[index].coordinate)} km",
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
           Padding(
@@ -142,7 +168,7 @@ class _AvailablePlacesBottomscrollerState
                 Expanded(
                     child: FutureBuilder(
                   future: getAddressFromGeoPoint(
-                      widget.availablePlaces[index].coordinate!),
+                      widget.availablePlaces[index].coordinate),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasError) {
@@ -166,10 +192,10 @@ class _AvailablePlacesBottomscrollerState
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Row(
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: Icon(
                     Icons.account_circle,
@@ -178,19 +204,44 @@ class _AvailablePlacesBottomscrollerState
                   ),
                 ),
                 Expanded(
-                    child: Text(
-                  "Kevin Goris",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                    child: FutureBuilder<Account?>(
+                  future: getAccount(widget.availablePlaces[index].user_uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      final account = snapshot.data;
+                      if (account != null) {
+                        return Text(
+                          account.username,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      } else {
+                        return const Text(
+                          'User not found',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      }
+                    } else {
+                      return const Text(
+                        'loading...',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }
+                  },
                 ))
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Row(
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: Icon(
                     Icons.switch_left_rounded,
@@ -200,7 +251,7 @@ class _AvailablePlacesBottomscrollerState
                 ),
                 Expanded(
                     child: Text(
-                  "medium size",
+                  widget.availablePlaces[index].size,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ))
@@ -212,24 +263,24 @@ class _AvailablePlacesBottomscrollerState
               alignment: Alignment.bottomCenter,
               child: TextButton(
                 onPressed: () {},
-                child: Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.confirmation_num)),
-                      Text("CONFIRM")
-                    ],
-                  ),
-                ),
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      const Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: const Icon(Icons.confirmation_num)),
+                      const Text("CONFIRM")
+                    ],
                   ),
                 ),
               ),
