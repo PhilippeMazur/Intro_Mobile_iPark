@@ -2,15 +2,20 @@
 
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/chooseScreen.dart';
+import 'package:ipark/model/account.dart';
+import 'package:ipark/provider/authentication_provider.dart';
 import 'package:ipark/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
+import 'main.dart';
 
 class loginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
 
   Future<void> _dialogBuilder(BuildContext context) {
     return showDialog<void>(
@@ -35,34 +40,54 @@ class loginScreen extends StatelessWidget {
     );
   }
 
-   Future<void> _checkCredentials(BuildContext context) async {
-   FirebaseAuth auth = FirebaseAuth.instance;
+  Future<void> _checkCredentials(BuildContext context) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      if(!emailController.text.contains("@") || !emailController.text.contains(".") || passwordController.text == "") {
+      if (!emailController.text.contains("@") ||
+          !emailController.text.contains(".") ||
+          passwordController.text == "") {
         _dialogBuilder(context);
       } else {
-          final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => choosePage()),
-                      );    
+        final UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        try {
+          FirebaseFirestore.instance
+              .collection('accounts')
+              .where('user_uid',
+                  isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+              .get()
+              .then((QuerySnapshot snapshot) {
+            if (snapshot.docs.isNotEmpty) {
+              Account account = Account.fromMap(
+                  snapshot.docs.first.data() as Map<String, dynamic>);
+              Provider.of<AuthenticationProvider>(context, listen: false)
+                  .login(account);
+              logger.d(account);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => choosePage()),
+              );
+            } else {
+              logger.e("bestaat niet");
+            }
+          });
+        } catch (e) {
+          logger.e(e);
+        }
+        logger.d('succeeded');
       }
-      
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('not succeeded');
-        _dialogBuilder(context);
+        logger.e('not succeeded');
       } else if (e.code == 'wrong-password') {
         print('not succeeded');
         _dialogBuilder(context);
       }
-    } on Exception catch(e) {
-    _dialogBuilder(context);
+    } on Exception catch (e) {
+      _dialogBuilder(context);
     }
   }
 
@@ -80,16 +105,12 @@ class loginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ignore: prefer_const_constructors
                 Align(
                   alignment: Alignment.center,
-                  child:
-
-                      ///***If you have exported images you must have to copy those images in assets/images directory.
-                      Image(
+                  child: Image(
                     image: AssetImage("../assets/images/logoipark.png"),
-                    height: 120,
-                    width: 120,
+                    height: 250,
+                    width: 250,
                     fit: BoxFit.contain,
                   ),
                 ),

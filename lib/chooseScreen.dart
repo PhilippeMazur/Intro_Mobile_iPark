@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:ipark/available_places/available_places.dart';
+import 'package:ipark/login.dart';
+import 'package:ipark/provider/authentication_provider.dart';
 import 'package:ipark/verhuren.dart';
+import 'package:provider/provider.dart';
 
 class choosePage extends StatelessWidget {
   @override
@@ -15,12 +18,21 @@ class choosePage extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(0, 180, 0, 0),
-            padding: EdgeInsets.all(0),
+            margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+            alignment: Alignment.center,
+            child: Image(
+              image: AssetImage("../assets/images/logoipark.png"),
+              height: 250,
+              width: 250,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
             width: MediaQuery.of(context).size.width * 0.8,
             height: 100,
             decoration: BoxDecoration(
-              color: Color(0x1f000000),
+              color: Color(0xB5B5B5),
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(29.0),
             ),
@@ -34,19 +46,18 @@ class choosePage extends StatelessWidget {
               color: Color(0xffc9c9c9),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(29.0),
-                side: BorderSide(color: Color(0xff808080), width: 1),
+                borderRadius: BorderRadius.circular(32),
               ),
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(14),
               child: Text(
                 "Verhuren",
                 style: TextStyle(
                   fontSize: 28,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.normal,
                 ),
               ),
-              textColor: Color(0xd7080ae0),
+              textColor: Color.fromARGB(255, 8, 83, 195),
               height: MediaQuery.of(context).size.height,
               minWidth: MediaQuery.of(context).size.width,
             ),
@@ -54,7 +65,7 @@ class choosePage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
               padding: EdgeInsets.all(0),
               width: MediaQuery.of(context).size.width * 0.8,
               height: 100,
@@ -74,24 +85,23 @@ class choosePage extends StatelessWidget {
                           builder: (context) => AvailablePlaces()),
                     );
                   },
-                  color: Color(0xff090fcf),
+                  color: Color.fromARGB(255, 8, 83, 195),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(29.0),
-                    side: BorderSide(color: Color(0xff808080), width: 1),
+                    borderRadius: BorderRadius.circular(32),
                   ),
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    "Parkeren",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
+                  padding: const EdgeInsets.all(14),
                   textColor: Color(0xffffffff),
                   height: MediaQuery.of(context).size.height,
                   minWidth: MediaQuery.of(context).size.width,
+                  child: const Text(
+                    "Parkeren",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.normal,
+                    ),
+                  ),
                 ),
               ),
             ),
