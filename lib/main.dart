@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/login.dart';
 import 'package:ipark/provider/authentication_provider.dart';
@@ -31,19 +32,23 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => AuthenticationProvider(),
       child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: Navigation()
-          //     Consumer<AuthenticationProvider>(builder: (context, login, child) {
-          //   if (login.loggedIn) {
-          //     return choosePage();
-          //   } else {
-          //     return loginScreen();
-          //   }
-          // }),
-          ),
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(statusBarColor: Colors.black),
+            child: SafeArea(
+              child: Consumer<AuthenticationProvider>(
+                  builder: (context, login, child) {
+                if (login.loggedIn) {
+                  return const Navigation();
+                } else {
+                  return loginScreen();
+                }
+              }),
+            )),
+      ),
     );
   }
 }

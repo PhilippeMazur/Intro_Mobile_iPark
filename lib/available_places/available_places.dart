@@ -152,61 +152,26 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffffffff),
-      appBar: AppBar(
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          // Status bar color
-          statusBarColor: Color.fromARGB(255, 255, 255, 255),
+    return Stack(
+      alignment: Alignment.topLeft,
+      children: [
+        AvailablePlacesMap(
+          availablePlaces: _data,
+          mapController: _mapController,
+          snapToFunction: focusToListItem,
+          userLocation: userLocation,
+          scrollbarIndex: currentIndex,
         ),
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        shape: const Border(
-            bottom:
-                BorderSide(color: Color.fromARGB(255, 0, 152, 217), width: 4)),
-        title: const Text(
-          "Choose spot",
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.normal,
-            fontSize: 18,
-            color: Color(0xff000000),
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xff212435),
-            size: 24,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: Stack(
-        alignment: Alignment.topLeft,
-        children: [
-          AvailablePlacesMap(
-            availablePlaces: _data,
-            mapController: _mapController,
-            snapToFunction: focusToListItem,
-            userLocation: userLocation,
-            scrollbarIndex: currentIndex,
-          ),
-          Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: AvailablePlacesBottomscroller(
-                availablePlaces: _data,
-                dragToParkingSpot: dragToParkingSpot,
-                snaplistKey: bottomscrollerKey,
-                userLocation: userLocation,
-              )),
-          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
-        ],
-      ),
+        Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: AvailablePlacesBottomscroller(
+              availablePlaces: _data,
+              dragToParkingSpot: dragToParkingSpot,
+              snaplistKey: bottomscrollerKey,
+              userLocation: userLocation,
+            )),
+        AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
+      ],
     );
   }
 }

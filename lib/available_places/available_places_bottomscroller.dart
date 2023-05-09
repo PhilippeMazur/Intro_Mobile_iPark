@@ -294,7 +294,7 @@ class _AvailablePlacesBottomscrollerState
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 350,
+      height: 280,
       color: Colors.transparent,
       child: ScrollSnapList(
         clipBehavior: Clip.none,
