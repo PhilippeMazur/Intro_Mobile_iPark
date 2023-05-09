@@ -51,12 +51,12 @@ class _NavigationState extends State<Navigation> {
         selectedIndex: selectedIndex,
         barItems: <BarItem>[
           BarItem(
-            icon: Icons.event,
-            title: 'Events',
+            icon: Icons.car_rental_outlined,
+            title: 'Verhuren',
           ),
           BarItem(
             icon: Icons.search_rounded,
-            title: 'Search',
+            title: 'Huren',
           ),
         ],
       ),
