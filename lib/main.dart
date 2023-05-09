@@ -7,6 +7,7 @@ import 'package:ipark/provider/authentication_provider.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'navigation.dart';
 
 var logger = Logger(
   printer: PrettyPrinter(),
@@ -30,19 +31,19 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => AuthenticationProvider(),
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home:
-            Consumer<AuthenticationProvider>(builder: (context, login, child) {
-          if (login.loggedIn) {
-            return choosePage();
-          } else {
-            return loginScreen();
-          }
-        }),
-      ),
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: Navigation()
+          //     Consumer<AuthenticationProvider>(builder: (context, login, child) {
+          //   if (login.loggedIn) {
+          //     return choosePage();
+          //   } else {
+          //     return loginScreen();
+          //   }
+          // }),
+          ),
     );
   }
 }
