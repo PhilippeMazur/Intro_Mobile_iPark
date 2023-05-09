@@ -73,8 +73,8 @@ class Verhuren extends StatelessWidget {
                       children: [
                         ///***If you have exported images you must have to copy those images in assets/images directory.
                         Image(
-                          image: AssetImage(
-                              "../assets/images/intromobilelogo.png"),
+                          image:
+                              AssetImage("assets/images/intromobilelogo.png"),
                           height: 60,
                           width: 100,
                           fit: BoxFit.contain,
@@ -184,8 +184,7 @@ class Verhuren extends StatelessWidget {
 
                         ///***If you have exported images you must have to copy those images in assets/images directory.
                         Image(
-                      image:
-                          AssetImage("../assets/images/voorbeeldfotomap.png"),
+                      image: AssetImage("assets/images/voorbeeldfotomap.png"),
                       height: 100,
                       width: 230,
                       fit: BoxFit.cover,
@@ -472,18 +471,6 @@ class Verhuren extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                padding: EdgeInsets.all(0),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.14,
-                decoration: BoxDecoration(
-                  color: Color(0xff0a54c4),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.zero,
-                  border: Border.all(color: Color(0x4d9e9e9e), width: 1),
-                ),
               ),
             ],
           ),

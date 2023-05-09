@@ -66,10 +66,6 @@ class loginScreen extends StatelessWidget {
               Provider.of<AuthenticationProvider>(context, listen: false)
                   .login(account);
               logger.d(account);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => choosePage()),
-              );
             } else {
               logger.e("bestaat niet");
             }
@@ -108,7 +104,7 @@ class loginScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Image(
-                    image: AssetImage("../assets/images/logoipark.png"),
+                    image: AssetImage("assets/images/logoipark.png"),
                     height: 250,
                     width: 250,
                     fit: BoxFit.contain,
@@ -123,7 +119,7 @@ class loginScreen extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontStyle: FontStyle.normal,
-                      fontSize: 12,
+                      fontSize: 17,
                       color: Color(0xff0815b8),
                     ),
                   ),
