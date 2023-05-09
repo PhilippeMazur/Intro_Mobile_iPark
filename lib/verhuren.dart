@@ -8,6 +8,7 @@ import 'package:ipark/chooseLocation.dart';
 import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/login.dart';
 
+import 'custom_app_bar.dart';
 import 'model/parking_spot_model.dart';
 
 class Verhuren extends StatelessWidget {
@@ -35,24 +36,8 @@ class Verhuren extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffffffff),
-      appBar: AppBar(
-        toolbarHeight: 70, // Set this height
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        shape: const Border(
-            bottom:
-                BorderSide(color: Color.fromARGB(255, 0, 152, 217), width: 4)),
-        title: const Text(
-          "Verhuren",
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.normal,
-            fontSize: 18,
-            color: Color(0xff000000),
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: "verhuren",
       ),
       body: Column(
         children: [

@@ -10,6 +10,7 @@ import 'package:ipark/model/parking_spot_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
+import '../custom_app_bar.dart';
 import '../main.dart';
 import 'available_places_map.dart';
 
@@ -152,26 +153,28 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topLeft,
-      children: [
-        AvailablePlacesMap(
-          availablePlaces: _data,
-          mapController: _mapController,
-          snapToFunction: focusToListItem,
-          userLocation: userLocation,
-          scrollbarIndex: currentIndex,
-        ),
-        Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: AvailablePlacesBottomscroller(
-              availablePlaces: _data,
-              dragToParkingSpot: dragToParkingSpot,
-              snaplistKey: bottomscrollerKey,
-              userLocation: userLocation,
-            )),
-        AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
-      ],
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          AvailablePlacesMap(
+            availablePlaces: _data,
+            mapController: _mapController,
+            snapToFunction: focusToListItem,
+            userLocation: userLocation,
+            scrollbarIndex: currentIndex,
+          ),
+          Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: AvailablePlacesBottomscroller(
+                availablePlaces: _data,
+                dragToParkingSpot: dragToParkingSpot,
+                snaplistKey: bottomscrollerKey,
+                userLocation: userLocation,
+              )),
+          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
+        ],
+      ),
     );
   }
 }
