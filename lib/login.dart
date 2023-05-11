@@ -4,7 +4,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ipark/chooseScreen.dart';
 import 'package:ipark/model/account.dart';
 import 'package:ipark/provider/authentication_provider.dart';
 import 'package:ipark/register.dart';

@@ -7,47 +7,43 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/login.dart';
 
-import 'chooseScreen.dart';
-
 class register extends StatelessWidget {
-
   FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-    Future<void> saveData() async {
-  await FirebaseFirestore.instance.collection("accounts").add({
-    "username": usernameController.text,
-    "email": emailController.text,
-    "user_uid": auth.currentUser?.uid 
-  });
-}
+  Future<void> saveData() async {
+    await FirebaseFirestore.instance.collection("accounts").add({
+      "username": usernameController.text,
+      "email": emailController.text,
+      "user_uid": auth.currentUser?.uid
+    });
+  }
 
   Future<void> registerUser(BuildContext context) async {
     try {
-  UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-    email: emailController.text,
-    password: passwordController.text,
-  );
-  saveData();
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      saveData();
       // ignore: use_build_context_synchronously
       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => choosePage()),
-                        
-                      );
+        context,
+        MaterialPageRoute(builder: (context) => loginScreen()),
+      );
 
-  // User is created successfully
-} on FirebaseAuthException catch (e) {
-  if (e.code == 'weak-password') {
-    print('The password provided is too weak.');
-  } else if (e.code == 'email-already-in-use') {
-    print('The account already exists for that email.');
-  }
-} catch (e) {
-  print(e);
-}
+      // User is created successfully
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -63,7 +59,6 @@ class register extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16, 30, 16, 16),
               child: Row(
-                
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -76,8 +71,6 @@ class register extends StatelessWidget {
                       size: 0,
                     ),
                   ),
-                  
-                  
                 ],
               ),
             ),
@@ -154,8 +147,7 @@ class register extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
                         child: TextField(
-                          controller:
-                              emailController,
+                          controller: emailController,
                           obscureText: false,
                           textAlign: TextAlign.start,
                           maxLines: 1,
@@ -262,8 +254,8 @@ class register extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: MaterialButton(
                           onPressed: () {
-                      registerUser(context);
-                    },
+                            registerUser(context);
+                          },
                           color: Color(0xff0c2dd5),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
