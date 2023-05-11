@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ParkingSpotModel {
   final GeoPoint coordinate;
-  final String from;
-  final String until;
+  final Timestamp from;
+  final Timestamp until;
   final String size;
   final String user_uid;
   ParkingSpotModel({
@@ -20,8 +20,8 @@ class ParkingSpotModel {
 
   ParkingSpotModel copyWith({
     GeoPoint? coordinate,
-    String? from,
-    String? until,
+    Timestamp? from,
+    Timestamp? until,
     String? size,
     String? user_uid,
   }) {
@@ -47,8 +47,8 @@ class ParkingSpotModel {
   factory ParkingSpotModel.fromMap(Map<String, dynamic> map) {
     return ParkingSpotModel(
       coordinate: map['coordinate'],
-      from: map['from'] as String,
-      until: map['until'] as String,
+      from: map['from'],
+      until: map['until'],
       size: map['size'] as String,
       user_uid: map['user_uid'] as String,
     );

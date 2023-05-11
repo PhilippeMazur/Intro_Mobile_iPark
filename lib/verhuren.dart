@@ -4,8 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/chooseLocation.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'custom_app_bar.dart';
+import 'date_time_picker.dart';
 import 'model/parking_spot_model.dart';
 
 class Verhuren extends StatefulWidget {
@@ -22,6 +25,7 @@ class _Verhuren extends State<Verhuren> {
   final TextEditingController totController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  late final DateTime fromDate;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -41,13 +45,27 @@ class _Verhuren extends State<Verhuren> {
     });
   }
 
+  setFromDate(DateTime newFromDate) {
+    setState(() {
+      fromDate = newFromDate;
+    });
+  }
+
   Future<void> saveData() async {
     await FirebaseFirestore.instance.collection("parking_spots").add(
         ParkingSpotModel(
                 coordinate: geopoint,
-                from: vanController.text,
+                from: Timestamp(
+                    (DateTime.parse(vanController.text).millisecondsSinceEpoch /
+                            1000)
+                        .round(),
+                    0),
                 size: sizeController.text,
-                until: totController.text,
+                until: Timestamp(
+                    (DateTime.parse(totController.text).millisecondsSinceEpoch /
+                            1000)
+                        .round(),
+                    0),
                 user_uid: auth.currentUser!.uid)
             .toMap());
   }
@@ -161,39 +179,7 @@ class _Verhuren extends State<Verhuren> {
                     const Text("van:", textAlign: TextAlign.right),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      child: TextField(
-                        controller: vanController,
-                        obscureText: false,
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 12,
-                          color: Color(0xff000000),
-                        ),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            // width: 0.0 produces a thin "hairline" border
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(90.0)),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color.fromARGB(255, 129, 129, 129),
-                          ),
-                          hintText: "01/02/2023 - 18u30",
-                          filled: true,
-                          fillColor: Color(0xfff2f2f3),
-                          isDense: false,
-                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                          suffixIcon: Icon(Icons.calendar_today,
-                              color: Color(0xff212435), size: 25),
-                        ),
-                      ),
+                      child: DateTimePicker(setState: setFromDate),
                     ),
                   ],
                 ),
