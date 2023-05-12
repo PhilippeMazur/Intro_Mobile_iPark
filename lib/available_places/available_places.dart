@@ -29,6 +29,9 @@ class _AvailablePlacesState extends State<AvailablePlaces>
       _streamSubscription;
 
   late final MapController _mapController;
+  DateTime fromDate = DateTime.now();
+  DateTime untilDate = DateTime.fromMillisecondsSinceEpoch(
+      DateTime.now().millisecondsSinceEpoch + 18000000);
 
   List<ParkingSpotModel> _data = [];
 
@@ -41,6 +44,18 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   int currentIndex = 0;
 
   Distance distance = Distance();
+
+  setNewFromDate(DateTime newDate) {
+    setState(() {
+      fromDate = newDate;
+    });
+  }
+
+  setNewUntilDate(DateTime newDate) {
+    setState(() {
+      untilDate = newDate;
+    });
+  }
 
   setNewAddress(LatLng newAddress) {
     setState(() {
