@@ -26,6 +26,7 @@ class _Verhuren extends State<Verhuren> {
   final TextEditingController sizeController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   late final DateTime fromDate;
+  late final DateTime untilDate;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -51,21 +52,21 @@ class _Verhuren extends State<Verhuren> {
     });
   }
 
+  setUntilDate(DateTime newUntilDate) {
+    setState(() {
+      untilDate = newUntilDate;
+    });
+  }
+
   Future<void> saveData() async {
     await FirebaseFirestore.instance.collection("parking_spots").add(
         ParkingSpotModel(
                 coordinate: geopoint,
-                from: Timestamp(
-                    (DateTime.parse(vanController.text).millisecondsSinceEpoch /
-                            1000)
-                        .round(),
-                    0),
+                from: Timestamp.fromMillisecondsSinceEpoch(
+                    fromDate.millisecondsSinceEpoch),
                 size: sizeController.text,
-                until: Timestamp(
-                    (DateTime.parse(totController.text).millisecondsSinceEpoch /
-                            1000)
-                        .round(),
-                    0),
+                until: Timestamp.fromMillisecondsSinceEpoch(
+                    untilDate.millisecondsSinceEpoch),
                 user_uid: auth.currentUser!.uid)
             .toMap());
   }
@@ -188,39 +189,7 @@ class _Verhuren extends State<Verhuren> {
                     const Text("tot:", textAlign: TextAlign.right),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      child: TextField(
-                        controller: totController,
-                        obscureText: false,
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 12,
-                          color: Color(0xff000000),
-                        ),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            // width: 0.0 produces a thin "hairline" border
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(90.0)),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color.fromARGB(255, 129, 129, 129),
-                          ),
-                          hintText: "01/02/2023 - 19u30",
-                          filled: true,
-                          fillColor: Color(0xfff2f2f3),
-                          isDense: false,
-                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                          suffixIcon: Icon(Icons.calendar_today,
-                              color: Color(0xff212435), size: 25),
-                        ),
-                      ),
+                      child: DateTimePicker(setState: setUntilDate),
                     ),
                   ],
                 ),
