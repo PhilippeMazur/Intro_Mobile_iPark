@@ -180,7 +180,30 @@ class _Verhuren extends State<Verhuren> {
                     const Text("van:", textAlign: TextAlign.right),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      child: DateTimePicker(setState: setFromDate),
+                      child: DateTimePicker(
+                        setState: setFromDate,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            // width: 0.0 produces a thin "hairline" border
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(90.0)),
+                            borderSide: BorderSide.none,
+                          ),
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 129, 129, 129),
+                          ),
+                          hintText: "datum",
+                          filled: true,
+                          fillColor: Color(0xfff2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                          suffixIcon: Icon(Icons.calendar_today,
+                              color: Color(0xff212435), size: 25),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -189,7 +212,30 @@ class _Verhuren extends State<Verhuren> {
                     const Text("tot:", textAlign: TextAlign.right),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      child: DateTimePicker(setState: setUntilDate),
+                      child: DateTimePicker(
+                        setState: setUntilDate,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            // width: 0.0 produces a thin "hairline" border
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(90.0)),
+                            borderSide: BorderSide.none,
+                          ),
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 129, 129, 129),
+                          ),
+                          hintText: "datum",
+                          filled: true,
+                          fillColor: Color(0xfff2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                          suffixIcon: Icon(Icons.calendar_today,
+                              color: Color(0xff212435), size: 25),
+                        ),
+                      ),
                     ),
                   ],
                 ),
