@@ -9,7 +9,17 @@ import '../main.dart';
 
 class AvailablePlacesTypeBar extends StatefulWidget {
   final Function(LatLng) changeChosenAddress;
-  const AvailablePlacesTypeBar({super.key, required this.changeChosenAddress});
+  final DateTime fromDate;
+  final DateTime untilDate;
+  final Function(DateTime) setFromDate;
+  final Function(DateTime) setUntilDate;
+  const AvailablePlacesTypeBar(
+      {super.key,
+      required this.changeChosenAddress,
+      required this.setFromDate,
+      required this.setUntilDate,
+      required this.fromDate,
+      required this.untilDate});
 
   @override
   State<AvailablePlacesTypeBar> createState() => _AvailablePlacesTypeBarState();
@@ -72,11 +82,11 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.only(left: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(250.0),
+            borderRadius: BorderRadius.circular(30.0),
             boxShadow: [
               BoxShadow(
                 offset: const Offset(0, 2),
@@ -85,45 +95,70 @@ class _AvailablePlacesTypeBarState extends State<AvailablePlacesTypeBar> {
               ),
             ],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
+          child: Column(
             children: [
-              const Icon(
-                Icons.location_on,
-                color: Color.fromARGB(255, 0, 152, 217),
-                size: 32.0,
-                semanticLabel: 'Text to announce in accessibility modes',
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _inputAddressController,
-                  obscureText: false,
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    color: Color.fromARGB(255, 0, 152, 217),
+                    size: 32.0,
                   ),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(200.0),
-                      borderSide: BorderSide.none,
+                  Expanded(
+                    child: TextField(
+                      controller: _inputAddressController,
+                      obscureText: false,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14,
+                        color: Color(0xff000000),
+                      ),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(200.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: "Enter adress",
+                        hintStyle: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
+                        ),
+                        contentPadding: const EdgeInsets.fromLTRB(15, 8, 12, 8),
+                      ),
                     ),
-                    hintText: "Enter adress",
-                    hintStyle: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                    contentPadding: const EdgeInsets.fromLTRB(15, 8, 12, 8),
                   ),
-                ),
+                ],
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: widget.fromDate.toString(),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

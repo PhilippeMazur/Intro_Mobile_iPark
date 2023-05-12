@@ -187,7 +187,13 @@ class _AvailablePlacesState extends State<AvailablePlaces>
                 snaplistKey: bottomscrollerKey,
                 userLocation: userLocation,
               )),
-          AvailablePlacesTypeBar(changeChosenAddress: setNewAddress),
+          AvailablePlacesTypeBar(
+            changeChosenAddress: setNewAddress,
+            fromDate: fromDate,
+            setFromDate: setNewFromDate,
+            setUntilDate: setNewUntilDate,
+            untilDate: untilDate,
+          ),
         ],
       ),
     );
