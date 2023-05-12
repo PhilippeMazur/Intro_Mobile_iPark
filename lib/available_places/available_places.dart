@@ -111,10 +111,6 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   filterPots() {
     List<ParkingSpotModel> newFilteredSpots = [];
     for (var spot in allSpots) {
-      logger.d(spot.until.toDate().toString() +
-          " " +
-          untilDate.toString() +
-          (spot.until.toDate().compareTo(untilDate)).toString());
       if (spot.from.toDate().compareTo(fromDate) <= 0 &&
           spot.until.toDate().compareTo(untilDate) >= 0) {
         newFilteredSpots.add(spot);
@@ -133,8 +129,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
       currentIndex = index;
     });
     ParkingSpotModel spot = filteredSpots[index];
-    LatLng center =
-        LatLng(spot.coordinate!.latitude, spot.coordinate.longitude);
+    LatLng center = LatLng(spot.coordinate.latitude, spot.coordinate.longitude);
 
     //replace
     animatedMapMove(center, _mapController.zoom);
