@@ -58,7 +58,7 @@ class _AvailablePlacesBottomscrollerState
         final account = Account.fromMap(
           querySnapshot.docs.first.data(),
         );
-        logger.d(account);
+        //logger.d(account);
         return account;
       } else {
         logger.e("user not found");

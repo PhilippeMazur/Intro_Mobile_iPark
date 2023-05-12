@@ -23,8 +23,8 @@ class AvailablePlaces extends StatefulWidget {
 
 class _AvailablePlacesState extends State<AvailablePlaces>
     with TickerProviderStateMixin {
-  final AvailablePlacesSnapshot =
-      FirebaseFirestore.instance.collection("parking_spots").snapshots();
+  final AvailablePlacesRef =
+      FirebaseFirestore.instance.collection("parking_spots");
   late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
       _streamSubscription;
 
@@ -33,7 +33,8 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   DateTime untilDate = DateTime.fromMillisecondsSinceEpoch(
       DateTime.now().millisecondsSinceEpoch + 18000000);
 
-  List<ParkingSpotModel> _data = [];
+  List<ParkingSpotModel> filteredSpots = [];
+  List<ParkingSpotModel> allSpots = [];
 
   List<int> data = [];
 
@@ -49,18 +50,20 @@ class _AvailablePlacesState extends State<AvailablePlaces>
     setState(() {
       fromDate = newDate;
     });
+    filterPots();
   }
 
   setNewUntilDate(DateTime newDate) {
     setState(() {
       untilDate = newDate;
     });
+    filterPots();
   }
 
   setNewAddress(LatLng newAddress) {
     setState(() {
       userLocation = newAddress;
-      _data.sort((a, b) => distanceToUserLocation(a.coordinate)
+      filteredSpots.sort((a, b) => distanceToUserLocation(a.coordinate)
           .compareTo(distanceToUserLocation(b.coordinate)));
       ;
     });
@@ -80,14 +83,14 @@ class _AvailablePlacesState extends State<AvailablePlaces>
   @override
   void initState() {
     _mapController = MapController();
-    _streamSubscription = AvailablePlacesSnapshot.listen((data) {
+    _streamSubscription = AvailablePlacesRef.snapshots().listen((data) {
       List<ParkingSpotModel> newSpots = [];
       for (var map in data.docs) {
         try {
           var spot = ParkingSpotModel.fromMap(map.data());
           newSpots.add(spot);
         } catch (e) {
-          print('Skipping object');
+          logger.d('Skipping object');
         }
       }
       if (userLocation != null) {
@@ -95,31 +98,49 @@ class _AvailablePlacesState extends State<AvailablePlaces>
             .compareTo(distanceToUserLocation(b.coordinate)));
       }
       setState(() {
-        _data = newSpots;
+        allSpots = newSpots;
+        filteredSpots = allSpots;
       });
+      filterPots();
     });
 
     super.initState();
     userLocation = null;
   }
 
+  filterPots() {
+    List<ParkingSpotModel> newFilteredSpots = [];
+    for (var spot in allSpots) {
+      logger.d(spot.until.toDate().toString() +
+          " " +
+          untilDate.toString() +
+          (spot.until.toDate().compareTo(untilDate)).toString());
+      if (spot.from.toDate().compareTo(fromDate) <= 0 &&
+          spot.until.toDate().compareTo(untilDate) >= 0) {
+        newFilteredSpots.add(spot);
+        logger.d("keeping spot" + spot.toString());
+      } else {
+        logger.d("skipping spot" + spot.toString());
+      }
+    }
+    setState(() {
+      filteredSpots = newFilteredSpots;
+    });
+  }
+
   dragToParkingSpot(int index) {
     setState(() {
       currentIndex = index;
     });
-    ParkingSpotModel spot = _data[index];
-    if (spot.coordinate?.latitude != null &&
-        spot.coordinate?.longitude != null) {
-      LatLng center =
-          LatLng(spot.coordinate!.latitude, spot.coordinate!.longitude);
+    ParkingSpotModel spot = filteredSpots[index];
+    LatLng center =
+        LatLng(spot.coordinate!.latitude, spot.coordinate.longitude);
 
-      //replace
-      animatedMapMove(center, _mapController.zoom);
-    }
+    //replace
+    animatedMapMove(center, _mapController.zoom);
   }
 
   focusToListItem(int index) {
-    print(index);
     setState(() {
       currentIndex = index;
     });
@@ -173,7 +194,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
         alignment: Alignment.topLeft,
         children: [
           AvailablePlacesMap(
-            availablePlaces: _data,
+            availablePlaces: filteredSpots,
             mapController: _mapController,
             snapToFunction: focusToListItem,
             userLocation: userLocation,
@@ -182,7 +203,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
           Align(
               alignment: FractionalOffset.bottomCenter,
               child: AvailablePlacesBottomscroller(
-                availablePlaces: _data,
+                availablePlaces: filteredSpots,
                 dragToParkingSpot: dragToParkingSpot,
                 snaplistKey: bottomscrollerKey,
                 userLocation: userLocation,
