@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'main.dart';
+
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime) setState;
   final InputDecoration decoration;
@@ -37,8 +39,8 @@ class _DateTimePickerState extends State<DateTimePicker> {
                 DateTime sum = DateTime.fromMillisecondsSinceEpoch(
                     date.millisecondsSinceEpoch +
                         (time.hour * 3600000 + time.minute * 60000));
-                textController.text =
-                    DateFormat('dd-MM-yyy hh:mm').format(date);
+                logger.d(sum.minute);
+                textController.text = DateFormat('dd-MM-y HH:mm').format(sum);
 
                 widget.setState(sum);
               } else {
