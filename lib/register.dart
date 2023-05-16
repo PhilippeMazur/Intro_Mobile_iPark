@@ -29,10 +29,7 @@ class register extends StatelessWidget {
       );
       saveData();
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => loginScreen()),
-      );
+      Navigator.pop(context);
 
       // User is created successfully
     } on FirebaseAuthException catch (e) {
