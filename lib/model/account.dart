@@ -4,6 +4,7 @@ import 'dart:convert';
 class Account {
   String username;
   String email;
+  late String id;
   Account({
     required this.username,
     required this.email,

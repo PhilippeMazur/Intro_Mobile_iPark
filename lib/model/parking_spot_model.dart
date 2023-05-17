@@ -10,7 +10,7 @@ class ParkingSpotModel {
   final Timestamp until;
   final String size;
   final String user_uid;
-  final String? reserved_by;
+  String? reserved_by;
   late final String id;
   ParkingSpotModel({
     required this.coordinate,

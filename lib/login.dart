@@ -62,6 +62,7 @@ class loginScreen extends StatelessWidget {
             if (snapshot.docs.isNotEmpty) {
               Account account = Account.fromMap(
                   snapshot.docs.first.data() as Map<String, dynamic>);
+              account.id = snapshot.docs.first.id;
               Provider.of<AuthenticationProvider>(context, listen: false)
                   .login(account);
               logger.d(account);
