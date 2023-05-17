@@ -8,12 +8,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import '../model/account.dart';
 import '../model/parking_spot_model.dart';
+import '../provider/authentication_provider.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
@@ -94,6 +96,10 @@ class _AvailablePlacesBottomscrollerState
   }
 
   reserveSpot() {
+    logger.d(
+        Provider.of<AuthenticationProvider>(context, listen: false).user?.id);
+    widget.availablePlaces[widget.currentIndex].reserved_by =
+        Provider.of<AuthenticationProvider>(context, listen: false).user?.id;
     FirebaseFirestore.instance
         .collection('parking_spots')
         .doc(widget.availablePlaces[widget.currentIndex].id)

@@ -65,7 +65,7 @@ class loginScreen extends StatelessWidget {
               account.id = snapshot.docs.first.id;
               Provider.of<AuthenticationProvider>(context, listen: false)
                   .login(account);
-              logger.d(account);
+              logger.d(account.id);
             } else {
               logger.e("bestaat niet");
             }
