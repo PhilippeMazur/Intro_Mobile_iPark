@@ -20,13 +20,15 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
   final Function(int) dragToParkingSpot;
   final GlobalKey<ScrollSnapListState>? snaplistKey;
   final LatLng? userLocation;
+  final int currentIndex;
 
   const AvailablePlacesBottomscroller(
       {super.key,
       required this.availablePlaces,
       required this.dragToParkingSpot,
       this.snaplistKey,
-      required this.userLocation});
+      required this.userLocation,
+      required this.currentIndex});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -35,6 +37,75 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
 
 class _AvailablePlacesBottomscrollerState
     extends State<AvailablePlacesBottomscroller> {
+  Future<void> confirmDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bevesig'),
+          content: const Text('wil je deze plek reserveren?'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ja'),
+              onPressed: () {
+                Navigator.pop(context);
+                reserveSpot();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Annuleer'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showErrorDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Fout'),
+          content: const Text('je plek kon niet opgeslagen worden'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  reserveSpot() {
+    FirebaseFirestore.instance
+        .collection('parking_spots')
+        .doc(widget.availablePlaces[widget.currentIndex].id)
+        .update(widget.availablePlaces[widget.currentIndex].toMap())
+        .then((value) => logger.d("gelukt"))
+        .catchError((error) {
+      logger.d(widget.availablePlaces[widget.currentIndex].id);
+      logger.e(error);
+      showErrorDialog(context);
+    });
+  }
+
   final Distance distance = Distance();
   @override
   void initState() {
@@ -262,7 +333,9 @@ class _AvailablePlacesBottomscrollerState
             child: Align(
               alignment: Alignment.bottomCenter,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  confirmDialog(context);
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -279,7 +352,7 @@ class _AvailablePlacesBottomscrollerState
                       const Padding(
                           padding: EdgeInsets.only(right: 10),
                           child: const Icon(Icons.confirmation_num)),
-                      const Text("CONFIRM")
+                      const Text("BEVESTIG")
                     ],
                   ),
                 ),

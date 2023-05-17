@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:ipark/available_places/available_places_bottomscroller.dart';
 import 'package:ipark/available_places/available_places_typebar.dart';
@@ -10,7 +9,6 @@ import 'package:ipark/model/parking_spot_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 
-import '../custom_app_bar.dart';
 import '../main.dart';
 import 'available_places_map.dart';
 
@@ -44,7 +42,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
 
   int currentIndex = 0;
 
-  Distance distance = Distance();
+  Distance distance = const Distance();
 
   setNewFromDate(DateTime newDate) {
     setState(() {
@@ -88,7 +86,10 @@ class _AvailablePlacesState extends State<AvailablePlaces>
       for (var map in data.docs) {
         try {
           var spot = ParkingSpotModel.fromMap(map.data());
-          newSpots.add(spot);
+          if (spot.reserved_by == null) {
+            spot.id = map.id;
+            newSpots.add(spot);
+          }
         } catch (e) {
           logger.d('Skipping object');
         }
@@ -202,6 +203,7 @@ class _AvailablePlacesState extends State<AvailablePlaces>
                 dragToParkingSpot: dragToParkingSpot,
                 snaplistKey: bottomscrollerKey,
                 userLocation: userLocation,
+                currentIndex: currentIndex,
               )),
           AvailablePlacesTypeBar(
             changeChosenAddress: setNewAddress,

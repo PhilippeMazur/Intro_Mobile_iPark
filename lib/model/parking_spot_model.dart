@@ -10,12 +10,15 @@ class ParkingSpotModel {
   final Timestamp until;
   final String size;
   final String user_uid;
+  final String? reserved_by;
+  late final String id;
   ParkingSpotModel({
     required this.coordinate,
     required this.from,
     required this.until,
     required this.size,
     required this.user_uid,
+    this.reserved_by,
   });
 
   ParkingSpotModel copyWith({
@@ -24,6 +27,7 @@ class ParkingSpotModel {
     Timestamp? until,
     String? size,
     String? user_uid,
+    String? reserved_by,
   }) {
     return ParkingSpotModel(
       coordinate: coordinate ?? this.coordinate,
@@ -31,6 +35,7 @@ class ParkingSpotModel {
       until: until ?? this.until,
       size: size ?? this.size,
       user_uid: user_uid ?? this.user_uid,
+      reserved_by: reserved_by ?? this.reserved_by,
     );
   }
 
@@ -41,6 +46,7 @@ class ParkingSpotModel {
       'until': until,
       'size': size,
       'user_uid': user_uid,
+      'reserved_by': reserved_by,
     };
   }
 
@@ -51,6 +57,8 @@ class ParkingSpotModel {
       until: map['until'],
       size: map['size'] as String,
       user_uid: map['user_uid'] as String,
+      reserved_by:
+          map['reserved_by'] != null ? map['reserved_by'] as String : null,
     );
   }
 
@@ -61,7 +69,7 @@ class ParkingSpotModel {
 
   @override
   String toString() {
-    return 'ParkingSpotModel(coordinate: $coordinate, from: $from, until: $until, size: $size, user_uid: $user_uid)';
+    return 'ParkingSpotModel(coordinate: $coordinate, from: $from, until: $until, size: $size, user_uid: $user_uid, reserved_by: $reserved_by)';
   }
 
   @override
@@ -72,7 +80,8 @@ class ParkingSpotModel {
         other.from == from &&
         other.until == until &&
         other.size == size &&
-        other.user_uid == user_uid;
+        other.user_uid == user_uid &&
+        other.reserved_by == reserved_by;
   }
 
   @override
@@ -81,6 +90,7 @@ class ParkingSpotModel {
         from.hashCode ^
         until.hashCode ^
         size.hashCode ^
-        user_uid.hashCode;
+        user_uid.hashCode ^
+        reserved_by.hashCode;
   }
 }
