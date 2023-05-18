@@ -10,15 +10,13 @@ import 'package:async/async.dart';
 import 'custom_app_bar.dart';
 import 'main.dart';
 import 'model/parking_spot_model.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatelessWidget {
-  static List<String> sampleData = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5'
-  ];
+  String formatTimeStamp(Timestamp timestamp) {
+    DateTime datetime = timestamp.toDate();
+    return DateFormat('dd-MM-y HH:mm').format(datetime);
+  }
 
   const ProfilePage({super.key});
 
@@ -188,7 +186,7 @@ class ProfilePage extends StatelessWidget {
                                       textAlign: TextAlign.right),
                                   Padding(
                                       padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                      child: Text("test")),
+                                      child: Text(formatTimeStamp(spot.from))),
                                 ],
                               ),
                               TableRow(
@@ -197,7 +195,7 @@ class ProfilePage extends StatelessWidget {
                                       textAlign: TextAlign.right),
                                   Padding(
                                       padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                      child: Text("test")),
+                                      child: Text(formatTimeStamp(spot.until))),
                                 ],
                               ),
                               TableRow(
