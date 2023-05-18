@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
             child: SafeArea(
               child: Consumer<AuthenticationProvider>(
                   builder: (context, login, child) {
-                if (login.loggedIn) {
+                if (login.user != null) {
                   return const Navigation();
                 } else {
                   return loginScreen();
