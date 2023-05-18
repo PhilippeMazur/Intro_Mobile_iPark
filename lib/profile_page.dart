@@ -98,7 +98,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      backgroundColor: const Color(0xffffffff),
       appBar: const CustomAppBar(
         title: "Profiel",
       ),
@@ -153,15 +153,15 @@ class ProfilePage extends StatelessWidget {
                             // React to the data received from the stream
                             return Text(
                               snapshot.data!.docs.length.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w900, fontSize: 40),
                             );
                           } else {
-                            return Text('Waiting for data...');
+                            return const Text('Waiting for data...');
                           }
                         },
                       ),
-                      Text("keer verhuurd")
+                      const Text("keer verhuurd")
                     ],
                   )),
                   const VerticalDivider(
@@ -189,30 +189,30 @@ class ProfilePage extends StatelessWidget {
                             // React to the data received from the stream
                             return Text(
                               snapshot.data!.docs.length.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w900, fontSize: 40),
                             );
                           } else {
-                            return Text('Waiting for data...');
+                            return const Text('Waiting for data...');
                           }
                         },
                       ),
-                      Text("keer gehuurd")
+                      const Text("keer gehuurd")
                     ],
                   )),
                 ],
               )),
               Container(
-                margin: EdgeInsets.fromLTRB(0, 50, 0, 20),
+                margin: const EdgeInsets.fromLTRB(0, 50, 0, 20),
                 alignment: Alignment.centerLeft,
                 child: Text("geschidenis".toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: Colors.blue)),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 50),
+                margin: const EdgeInsets.only(bottom: 50),
                 child: FutureBuilder<List<ParkingSpotModel>>(
                   future: getRentAndHired(context),
                   builder: (context, snapshot) {
@@ -220,14 +220,14 @@ class ProfilePage extends StatelessWidget {
                       List<ParkingSpotModel> spots = snapshot.data!;
                       logger.d(spots.length);
                       return ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: spots.length,
                         itemBuilder: (context, index) {
                           final ParkingSpotModel spot = spots[index];
                           logger.d(spot.id);
                           return Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color.fromARGB(255, 228, 243, 255),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(20),
@@ -252,9 +252,9 @@ class ProfilePage extends StatelessWidget {
                                               : Colors.purple,
                                           borderRadius:
                                               BorderRadius.circular(100)),
-                                      margin: EdgeInsets.symmetric(
+                                      margin: const EdgeInsets.symmetric(
                                           vertical: 5, horizontal: 12),
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 5),
                                       child: Text(
                                         spot.user_uid ==
@@ -368,8 +368,8 @@ class ProfilePage extends StatelessWidget {
                                                 fontWeight: FontWeight.w700),
                                             textAlign: TextAlign.right),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 7, 0, 7),
                                           child: FutureBuilder<dynamic>(
                                             future: geoPointToAddress(
                                                 spot.coordinate),
@@ -398,7 +398,7 @@ class ProfilePage extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                   },
                 ),
