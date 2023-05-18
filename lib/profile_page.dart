@@ -64,7 +64,7 @@ class ProfilePage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(30),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 30),
           child: Column(
             children: [
               Image.asset(width: 130, "assets/images/profile_pic.png"),
@@ -195,114 +195,170 @@ class ProfilePage extends StatelessWidget {
                       }
                     }
                     logger.d(spots.length);
-
                     return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: spots.length,
                       itemBuilder: (context, index) {
                         final ParkingSpotModel spot = spots[index];
                         logger.d(spot.id);
                         return Container(
-                          color: Colors.blue,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 228, 243, 255),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
                           margin: const EdgeInsets.symmetric(vertical: 5),
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 5),
-                          child: Table(
-                            columnWidths: const <int, TableColumnWidth>{
-                              0: IntrinsicColumnWidth(),
-                              1: FlexColumnWidth(),
-                            },
-                            defaultVerticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            children: <TableRow>[
-                              TableRow(
-                                children: <Widget>[
-                                  const Text("van:",
-                                      textAlign: TextAlign.right),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 7, 0, 7),
-                                      child: Text(formatTimeStamp(spot.from))),
-                                ],
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: spot.user_uid ==
+                                                Provider.of<AuthenticationProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .user!
+                                                    .user_uid
+                                            ? Colors.blue
+                                            : Colors.purple,
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 5),
+                                    child: Text(
+                                      spot.user_uid ==
+                                              Provider.of<AuthenticationProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .user!
+                                                  .user_uid
+                                          ? "verhuurd"
+                                          : "gehuurd",
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white),
+                                    )),
                               ),
-                              TableRow(
-                                children: <Widget>[
-                                  const Text("tot:",
-                                      textAlign: TextAlign.right),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 7, 0, 7),
-                                      child: Text(formatTimeStamp(spot.until))),
-                                ],
-                              ),
-                              TableRow(
-                                children: <Widget>[
-                                  const Text("verhuurd door:",
-                                      textAlign: TextAlign.right),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                    child: FutureBuilder<String?>(
-                                      future: getUserFromUid(spot.user_uid),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<String?> snapshot) {
-                                        if (snapshot.hasData) {
-                                          return (Text(snapshot.data!));
-                                        } else {
-                                          return (const Text(
-                                              "er ging iets mis"));
-                                        }
-                                      },
-                                    ),
+                              Table(
+                                columnWidths: const <int, TableColumnWidth>{
+                                  0: IntrinsicColumnWidth(),
+                                  1: FlexColumnWidth(),
+                                },
+                                defaultVerticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                children: <TableRow>[
+                                  TableRow(
+                                    children: <Widget>[
+                                      const Text("van:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 7, 0, 7),
+                                          child:
+                                              Text(formatTimeStamp(spot.from))),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              TableRow(
-                                children: <Widget>[
-                                  const Text("gehuurd door:",
-                                      textAlign: TextAlign.right),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                    child: spot.reserved_by == null
-                                        ? const Text("nog niemand")
-                                        : FutureBuilder<String?>(
-                                            future: getUserFromReference(
-                                                spot.reserved_by!),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<String?>
-                                                    snapshot) {
-                                              if (snapshot.hasData) {
-                                                return (Text(snapshot.data!));
-                                              } else {
-                                                return (const Text(
-                                                    "er ging iets mis"));
-                                              }
-                                            },
-                                          ),
+                                  TableRow(
+                                    children: <Widget>[
+                                      const Text("tot:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 7, 0, 7),
+                                          child: Text(
+                                              formatTimeStamp(spot.until))),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              TableRow(
-                                children: <Widget>[
-                                  const Text("adres:",
-                                      textAlign: TextAlign.right),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                    child: FutureBuilder<dynamic>(
-                                      future:
-                                          geoPointToAddress(spot.coordinate),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<dynamic> snapshot) {
-                                        if (snapshot.hasData) {
-                                          return (Text(
-                                              formatAdress(snapshot.data!)));
-                                        } else {
-                                          return (const Text(
-                                              "er ging iets mis"));
-                                        }
-                                      },
-                                    ),
+                                  TableRow(
+                                    children: <Widget>[
+                                      const Text("verhuurd door:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 7, 0, 7),
+                                        child: FutureBuilder<String?>(
+                                          future: getUserFromUid(spot.user_uid),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<String?> snapshot) {
+                                            if (snapshot.hasData) {
+                                              return (Text(snapshot.data!));
+                                            } else {
+                                              return (const Text(
+                                                  "er ging iets mis"));
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: <Widget>[
+                                      const Text("gehuurd door:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 7, 0, 7),
+                                        child: spot.reserved_by == null
+                                            ? const Text("nog niemand")
+                                            : FutureBuilder<String?>(
+                                                future: getUserFromReference(
+                                                    spot.reserved_by!),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<String?>
+                                                        snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return (Text(
+                                                        snapshot.data!));
+                                                  } else {
+                                                    return (const Text(
+                                                        "er ging iets mis"));
+                                                  }
+                                                },
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: <Widget>[
+                                      const Text("adres:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                        child: FutureBuilder<dynamic>(
+                                          future: geoPointToAddress(
+                                              spot.coordinate),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<dynamic> snapshot) {
+                                            if (snapshot.hasData) {
+                                              return (Text(formatAdress(
+                                                  snapshot.data!)));
+                                            } else {
+                                              return (const Text(
+                                                  "er ging iets mis"));
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
