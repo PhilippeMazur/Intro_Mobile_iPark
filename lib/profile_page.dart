@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:ipark/provider/authentication_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:async/async.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'custom_app_bar.dart';
 import 'main.dart';
@@ -16,6 +17,45 @@ class ProfilePage extends StatelessWidget {
   String formatTimeStamp(Timestamp timestamp) {
     DateTime datetime = timestamp.toDate();
     return DateFormat('dd-MM-y HH:mm').format(datetime);
+  }
+
+  Future<List<ParkingSpotModel>> getRentAndHired(BuildContext context) async {
+    List<ParkingSpotModel> spots = [];
+    final snapshot1 = await FirebaseFirestore.instance
+        .collection("parking_spots")
+        .where("user_uid",
+            isEqualTo:
+                Provider.of<AuthenticationProvider>(context, listen: false)
+                    .user!
+                    .user_uid)
+        .get();
+    for (var map in snapshot1.docs) {
+      try {
+        var spot = ParkingSpotModel.fromMap(map.data());
+        spot.id = map.id;
+        spots.add(spot);
+      } catch (e) {
+        logger.d('Skipping object');
+      }
+    }
+    final snapshot2 = await FirebaseFirestore.instance
+        .collection("parking_spots")
+        .where("reserved_by",
+            isEqualTo:
+                Provider.of<AuthenticationProvider>(context, listen: false)
+                    .user!
+                    .id)
+        .get();
+    for (var map in snapshot2.docs) {
+      try {
+        var spot = ParkingSpotModel.fromMap(map.data());
+        spot.id = map.id;
+        spots.add(spot);
+      } catch (e) {
+        logger.d('Skipping object');
+      }
+    }
+    return spots;
   }
 
   Future<String?> getUserFromUid(String uid) async {
@@ -155,45 +195,20 @@ class ProfilePage extends StatelessWidget {
                   )),
                 ],
               )),
-              Align(
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 50, 0, 20),
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "geschidenis",
-                ),
+                child: Text("geschidenis".toUpperCase(),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.blue)),
               ),
-              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: StreamGroup.merge([
-                  FirebaseFirestore.instance
-                      .collection("parking_spots")
-                      .where("user_uid",
-                          isEqualTo: Provider.of<AuthenticationProvider>(
-                                  context,
-                                  listen: false)
-                              .user!
-                              .user_uid)
-                      .snapshots(),
-                  FirebaseFirestore.instance
-                      .collection("parking_spots")
-                      .where("reserved_by",
-                          isEqualTo: Provider.of<AuthenticationProvider>(
-                                  context,
-                                  listen: false)
-                              .user!
-                              .id)
-                      .snapshots()
-                ]),
+              FutureBuilder<List<ParkingSpotModel>>(
+                future: getRentAndHired(context),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    List<ParkingSpotModel> spots = [];
-                    for (var map in snapshot.data!.docs) {
-                      try {
-                        var spot = ParkingSpotModel.fromMap(map.data());
-                        spot.id = map.id;
-                        spots.add(spot);
-                      } catch (e) {
-                        logger.d('Skipping object');
-                      }
-                    }
+                    List<ParkingSpotModel> spots = snapshot.data!;
                     logger.d(spots.length);
                     return ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
