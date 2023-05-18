@@ -33,6 +33,26 @@ class ProfilePage extends StatelessWidget {
         .firstWhere((document) => document.reference.id == ref)["username"];
   }
 
+  Future<dynamic> geoPointToAddress(GeoPoint coordinate) async {
+    final apiUrl =
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinate.latitude}&lon=${coordinate.longitude}&zoom=18&addressdetails=1';
+
+    try {
+      final response = await fetchJson(apiUrl);
+      return response;
+    } catch (e) {
+      logger.e('Error during API call: $e');
+      return null;
+    }
+  }
+
+  String formatAdress(dynamic nominatimResponse) {
+    dynamic address = nominatimResponse["address"];
+    if (address == null) return "error";
+    String townOrCity = address["town"] ?? address["city"];
+    return '${address["road"] ?? ""} ${address["house_number"] ?? ""}, ${address["postcode"] ?? ""} $townOrCity';
+  }
+
   const ProfilePage({super.key});
 
   @override
@@ -268,8 +288,22 @@ class ProfilePage extends StatelessWidget {
                                   const Text("adres:",
                                       textAlign: TextAlign.right),
                                   Padding(
-                                      padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                      child: Text("test")),
+                                    padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                    child: FutureBuilder<dynamic>(
+                                      future:
+                                          geoPointToAddress(spot.coordinate),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<dynamic> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return (Text(
+                                              formatAdress(snapshot.data!)));
+                                        } else {
+                                          return (const Text(
+                                              "er ging iets mis"));
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],

@@ -147,28 +147,6 @@ class _AvailablePlacesBottomscrollerState
     }
   }
 
-  Future<dynamic> fetchJson(String url) async {
-    final file = await DefaultCacheManager().getSingleFile(url);
-
-    // If the file exists in the cache, read and return it as JSON
-    if (await file.exists()) {
-      final jsonString = await file.readAsString();
-      //logger.d("request from cache");
-      return json.decode(jsonString);
-    }
-
-    // If the file doesn't exist in the cache, fetch it and save it to the cache
-    final response = await http.get(Uri.parse(url));
-    final jsonData = response.bodyBytes;
-
-    await DefaultCacheManager().putFile(
-      url,
-      Uint8List.fromList(jsonData),
-    );
-
-    return json.decode(utf8.decode(jsonData));
-  }
-
   String distanceToUserLocation(GeoPoint databaseRecordPoint) {
     LatLng databaseRecordPointLatLng =
         LatLng(databaseRecordPoint.latitude, databaseRecordPoint.longitude);
