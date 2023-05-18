@@ -18,6 +18,21 @@ class ProfilePage extends StatelessWidget {
     return DateFormat('dd-MM-y HH:mm').format(datetime);
   }
 
+  Future<String?> getUserFromUid(String uid) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('accounts')
+        .where('user_uid', isEqualTo: uid)
+        .get();
+    return snapshot.docs.first["username"] as String?;
+  }
+
+  Future<String?> getUserFromReference(String ref) async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('accounts').get();
+    return snapshot.docs
+        .firstWhere((document) => document.reference.id == ref)["username"];
+  }
+
   const ProfilePage({super.key});
 
   @override
@@ -169,9 +184,9 @@ class ProfilePage extends StatelessWidget {
                         logger.d(spot.id);
                         return Container(
                           color: Colors.blue,
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 5),
                           child: Table(
                             columnWidths: const <int, TableColumnWidth>{
                               0: IntrinsicColumnWidth(),
@@ -185,7 +200,8 @@ class ProfilePage extends StatelessWidget {
                                   const Text("van:",
                                       textAlign: TextAlign.right),
                                   Padding(
-                                      padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 7, 0, 7),
                                       child: Text(formatTimeStamp(spot.from))),
                                 ],
                               ),
@@ -194,7 +210,8 @@ class ProfilePage extends StatelessWidget {
                                   const Text("tot:",
                                       textAlign: TextAlign.right),
                                   Padding(
-                                      padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 7, 0, 7),
                                       child: Text(formatTimeStamp(spot.until))),
                                 ],
                               ),
@@ -203,8 +220,21 @@ class ProfilePage extends StatelessWidget {
                                   const Text("verhuurd door:",
                                       textAlign: TextAlign.right),
                                   Padding(
-                                      padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                      child: Text("test")),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                    child: FutureBuilder<String?>(
+                                      future: getUserFromUid(spot.user_uid),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<String?> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return (Text(snapshot.data!));
+                                        } else {
+                                          return (const Text(
+                                              "er ging iets mis"));
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                               TableRow(
@@ -212,8 +242,25 @@ class ProfilePage extends StatelessWidget {
                                   const Text("gehuurd door:",
                                       textAlign: TextAlign.right),
                                   Padding(
-                                      padding: EdgeInsets.fromLTRB(10, 7, 0, 7),
-                                      child: Text("test")),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 7, 0, 7),
+                                    child: spot.reserved_by == null
+                                        ? const Text("nog niemand")
+                                        : FutureBuilder<String?>(
+                                            future: getUserFromReference(
+                                                spot.reserved_by!),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<String?>
+                                                    snapshot) {
+                                              if (snapshot.hasData) {
+                                                return (Text(snapshot.data!));
+                                              } else {
+                                                return (const Text(
+                                                    "er ging iets mis"));
+                                              }
+                                            },
+                                          ),
+                                  ),
                                 ],
                               ),
                               TableRow(
