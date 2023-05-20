@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:ipark/verhuren.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 
 class ChooseLocation extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ChooseLocation extends State<ChooseLocation> {
       ),
       body: Container(
         child: OpenStreetMapSearchAndPick(
-            center: LatLong(51.260197, 4.402771),
+            center: LatLong(50.21225510110872,4.414775856685559),
             buttonColor: Color.fromARGB(255, 8, 73, 171),
             buttonText: 'Zet huidige locatie',
             onPicked: (pickedData) {
@@ -35,6 +36,8 @@ class _ChooseLocation extends State<ChooseLocation> {
                   "${addressParts[1]} ${addressParts[0]}, ${addressParts[4]} ${addressParts[2]}");
               widget.setGeoPoint(GeoPoint(
                   pickedData.latLong.latitude, pickedData.latLong.longitude));
+              Verhuren.mapController.move(LatLng(pickedData.latLong.latitude,pickedData.latLong.longitude), Verhuren.mapController.zoom);
+
               Navigator.pop(
                 context,
                 MaterialPageRoute(builder: (context) => Verhuren()),

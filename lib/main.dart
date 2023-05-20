@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
                 if (login.loggedIn) {
                   return const Navigation();
                 } else {
-                  return loginScreen();
+                  return Navigation(); // aanpassen naar Login als we pushen
                 }
               }),
             )),
