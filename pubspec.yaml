@@ -39,7 +39,6 @@ dependencies:
   latlong2: ^0.8.1
   flutter_map: any
   scroll_snap_list: ^0.9.1
-  open_street_map_search_and_pick: ^0.0.16
   firebase_auth: ^4.4.2
   http: ^0.13.5
   flutter_cache_manager: ^3.3.0
@@ -71,6 +70,7 @@ flutter:
     - assets/images/intromobilelogo.png
     - assets/images/logoipark.png
     - assets/images/voorbeeldfotomap.png
+    - assets/images/profile_pic.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

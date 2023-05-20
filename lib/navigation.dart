@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:ipark/available_places/available_places.dart';
+import 'package:ipark/profile_page.dart';
 import 'package:ipark/verhuren.dart';
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
 
@@ -58,6 +59,10 @@ class _NavigationState extends State<Navigation> {
             icon: Icons.search_rounded,
             title: 'Huren',
           ),
+          BarItem(
+            icon: Icons.person,
+            title: 'Profiel',
+          ),
         ],
       ),
     );
@@ -65,6 +70,7 @@ class _NavigationState extends State<Navigation> {
 }
 
 List<Widget> _listOfWidget = <Widget>[
-  Verhuren(),
+  const Verhuren(),
   const AvailablePlaces(),
+  const ProfilePage(),
 ];

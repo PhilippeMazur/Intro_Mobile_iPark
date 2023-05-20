@@ -1,7 +1,4 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +46,7 @@ Future<void> _dialogBuilder(BuildContext context) {
 
 class _Verhuren extends State<Verhuren> {
   String size = "not specified";
-  GeoPoint geopoint = GeoPoint(0,0);
+  GeoPoint geopoint = GeoPoint(0, 0);
   final TextEditingController vanController = TextEditingController();
   final TextEditingController totController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
@@ -218,16 +215,30 @@ class _Verhuren extends State<Verhuren> {
                     child: FlutterMap(
                       mapController: Verhuren.mapController,
                       options: MapOptions(
-                        center: LatLng(51.260197,4.40277), // Set the initial map center coordinates
+                        minZoom: 15.0,
+                        maxZoom: 15.0,
+                        center: LatLng(51.260197,
+                            4.40277), // Set the initial map center coordinates
                         zoom: 15.0, // Set the initial zoom level
                       ),
                       children: [
                         TileLayer(
-                          urlTemplate: 'http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', // Map provider URL
-                          subdomains: const ['1','2','3','4'],
+                          urlTemplate:
+                              'http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', // Map provider URL
+                          subdomains: const ['1', '2', '3', '4'],
                           retinaMode: true,
                         ),
-                        MarkerLayer(markers: [Marker(point: LatLng(geopoint.latitude, geopoint.longitude), builder: (context) => GestureDetector(child: Image.asset("assets/images/mapMarker.png")),)],),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point:
+                                  LatLng(geopoint.latitude, geopoint.longitude),
+                              builder: (context) => GestureDetector(
+                                  child: Image.asset(
+                                      "assets/images/mapMarker.png")),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -303,86 +314,119 @@ class _Verhuren extends State<Verhuren> {
                         Border.all(color: const Color(0x4d9e9e9e), width: 1),
                   ),
                 ),
-                SingleChildScrollView(
-                  child: Table(
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: IntrinsicColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      TableRow(
-                        children: <Widget>[
-                          const Text("van:", textAlign: TextAlign.right),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                            child: DateTimePicker(setState: setFromDate),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget>[
-                          const Text("tot:", textAlign: TextAlign.right),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                            child: DateTimePicker(setState: setUntilDate),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget>[
-                          const Text("grootte:", textAlign: TextAlign.right),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                            child: Focus(
-                              onFocusChange: (hasFocus) {
-                                _isTextFieldFocused = hasFocus;
-                                _scrollController.animateTo(
-                                  _isTextFieldFocused ? 1500.0 : 500.0,
-                                  duration: Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              },
-                              child: TextField(
-                                controller: sizeController,
-                                obscureText: false,
-                                textAlign: TextAlign.start,
-                                maxLines: 1,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 12,
-                                  color: Color(0xff000000),
-                                ),
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    // width: 0.0 produces a thin "hairline" border
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(90.0)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  hintStyle: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 14,
-                                    color: Color.fromARGB(255, 129, 129, 129),
-                                  ),
-                                  hintText: "Klein - Medium - Groot",
-                                  filled: true,
-                                  fillColor: Color(0xfff2f2f3),
-                                  isDense: false,
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                  suffixIcon: Icon(Icons.switch_left_rounded,
-                                      color: Color(0xff212435), size: 25),
-                                ),
+                Table(
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: IntrinsicColumnWidth(),
+                    1: FlexColumnWidth(),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: <TableRow>[
+                    TableRow(
+                      children: <Widget>[
+                        const Text("van:", textAlign: TextAlign.right),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                          child: DateTimePicker(
+                            setState: setFromDate,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                // width: 0.0 produces a thin "hairline" border
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(90.0)),
+                                borderSide: BorderSide.none,
                               ),
+                              hintStyle: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 129, 129, 129),
+                              ),
+                              hintText: "datum",
+                              filled: true,
+                              fillColor: Color(0xfff2f2f3),
+                              isDense: false,
+                              contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                              suffixIcon: Icon(Icons.calendar_today,
+                                  color: Color(0xff212435), size: 25),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
+                        const Text("tot:", textAlign: TextAlign.right),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                          child: DateTimePicker(
+                            setState: setUntilDate,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                // width: 0.0 produces a thin "hairline" border
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(90.0)),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintStyle: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 129, 129, 129),
+                              ),
+                              hintText: "datum",
+                              filled: true,
+                              fillColor: Color(0xfff2f2f3),
+                              isDense: false,
+                              contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                              suffixIcon: Icon(Icons.calendar_today,
+                                  color: Color(0xff212435), size: 25),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
+                        const Text("grootte:", textAlign: TextAlign.right),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                          child: TextField(
+                            controller: sizeController,
+                            obscureText: false,
+                            textAlign: TextAlign.start,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 12,
+                              color: Color(0xff000000),
+                            ),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                // width: 0.0 produces a thin "hairline" border
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(90.0)),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintStyle: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 129, 129, 129),
+                              ),
+                              hintText: "Klein - Medium - Groot",
+                              filled: true,
+                              fillColor: Color(0xfff2f2f3),
+                              isDense: false,
+                              contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                              suffixIcon: Icon(Icons.switch_left_rounded,
+                                  color: Color(0xff212435), size: 25),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 Expanded(
                   child: Align(

@@ -8,25 +8,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import '../model/account.dart';
 import '../model/parking_spot_model.dart';
+import '../provider/authentication_provider.dart';
 
 class AvailablePlacesBottomscroller extends StatefulWidget {
   final List<ParkingSpotModel> availablePlaces;
   final Function(int) dragToParkingSpot;
   final GlobalKey<ScrollSnapListState>? snaplistKey;
   final LatLng? userLocation;
+  final int currentIndex;
 
   const AvailablePlacesBottomscroller(
       {super.key,
       required this.availablePlaces,
       required this.dragToParkingSpot,
       this.snaplistKey,
-      required this.userLocation});
+      required this.userLocation,
+      required this.currentIndex});
 
   @override
   State<AvailablePlacesBottomscroller> createState() =>
@@ -35,6 +39,79 @@ class AvailablePlacesBottomscroller extends StatefulWidget {
 
 class _AvailablePlacesBottomscrollerState
     extends State<AvailablePlacesBottomscroller> {
+  Future<void> confirmDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bevesig'),
+          content: const Text('wil je deze plek reserveren?'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ja'),
+              onPressed: () {
+                Navigator.pop(context);
+                reserveSpot();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Annuleer'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showErrorDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Fout'),
+          content: const Text('je plek kon niet opgeslagen worden'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  reserveSpot() {
+    logger.d(
+        Provider.of<AuthenticationProvider>(context, listen: false).user?.id);
+    widget.availablePlaces[widget.currentIndex].reserved_by =
+        Provider.of<AuthenticationProvider>(context, listen: false).user?.id;
+    FirebaseFirestore.instance
+        .collection('parking_spots')
+        .doc(widget.availablePlaces[widget.currentIndex].id)
+        .update(widget.availablePlaces[widget.currentIndex].toMap())
+        .then((value) => logger.d("gelukt"))
+        .catchError((error) {
+      logger.d(widget.availablePlaces[widget.currentIndex].id);
+      logger.e(error);
+      showErrorDialog(context);
+    });
+  }
+
   final Distance distance = Distance();
   @override
   void initState() {
@@ -58,7 +135,7 @@ class _AvailablePlacesBottomscrollerState
         final account = Account.fromMap(
           querySnapshot.docs.first.data(),
         );
-        logger.d(account);
+        //logger.d(account);
         return account;
       } else {
         logger.e("user not found");
@@ -68,28 +145,6 @@ class _AvailablePlacesBottomscrollerState
       logger.e("something went wrong");
       return null;
     }
-  }
-
-  Future<dynamic> fetchJson(String url) async {
-    final file = await DefaultCacheManager().getSingleFile(url);
-
-    // If the file exists in the cache, read and return it as JSON
-    if (await file.exists()) {
-      final jsonString = await file.readAsString();
-      //logger.d("request from cache");
-      return json.decode(jsonString);
-    }
-
-    // If the file doesn't exist in the cache, fetch it and save it to the cache
-    final response = await http.get(Uri.parse(url));
-    final jsonData = response.bodyBytes;
-
-    await DefaultCacheManager().putFile(
-      url,
-      Uint8List.fromList(jsonData),
-    );
-
-    return json.decode(utf8.decode(jsonData));
   }
 
   String distanceToUserLocation(GeoPoint databaseRecordPoint) {
@@ -262,7 +317,9 @@ class _AvailablePlacesBottomscrollerState
             child: Align(
               alignment: Alignment.bottomCenter,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  confirmDialog(context);
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -279,7 +336,7 @@ class _AvailablePlacesBottomscrollerState
                       const Padding(
                           padding: EdgeInsets.only(right: 10),
                           child: const Icon(Icons.confirmation_num)),
-                      const Text("CONFIRM")
+                      const Text("BEVESTIG")
                     ],
                   ),
                 ),

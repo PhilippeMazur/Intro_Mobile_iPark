@@ -11,6 +11,7 @@ class AuthenticationProvider extends ChangeNotifier {
 
   logout() {
     _user = null;
+    notifyListeners();
   }
 
   login(Account newName) {

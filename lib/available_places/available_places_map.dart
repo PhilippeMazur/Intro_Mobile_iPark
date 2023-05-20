@@ -71,7 +71,7 @@ class _AvailablePlacesMapState extends State<AvailablePlacesMap> {
   }
 
   double markerHeight(int drawIndex) {
-    logger.d(widget.scrollbarIndex);
+    //logger.d(widget.scrollbarIndex);
     if (widget.scrollbarIndex == drawIndex) return 60;
     return 40;
   }

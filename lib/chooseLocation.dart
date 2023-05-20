@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:ipark/search_and_pic.dart';
 import 'package:ipark/verhuren.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'custom_app_bar.dart';
 
 class ChooseLocation extends StatefulWidget {
   final Function(String) setAddress;
@@ -22,28 +23,26 @@ class _ChooseLocation extends State<ChooseLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kies een locatie'),
+      appBar: const CustomAppBar(
+        title: "Kies een locatie",
+        navigationPopArrow: true,
       ),
-      body: Container(
-        child: OpenStreetMapSearchAndPick(
-            center: LatLong(50.21225510110872,4.414775856685559),
-            buttonColor: Color.fromARGB(255, 8, 73, 171),
-            buttonText: 'Zet huidige locatie',
-            onPicked: (pickedData) {
-              List<String> addressParts = pickedData.address.split(",");
-              widget.setAddress(
-                  "${addressParts[1]} ${addressParts[0]}, ${addressParts[4]} ${addressParts[2]}");
-              widget.setGeoPoint(GeoPoint(
-                  pickedData.latLong.latitude, pickedData.latLong.longitude));
-              Verhuren.mapController.move(LatLng(pickedData.latLong.latitude,pickedData.latLong.longitude), Verhuren.mapController.zoom);
+      body: SearchAndPick(
+          center: LatLng(51.260197, 4.402771),
+          buttonColor: Colors.blue,
+          buttonText: 'Zet huidige locatie',
+          onPicked: (pickedData) {
+            List<String> addressParts = pickedData.address.split(",");
+            widget.setAddress(
+                "${addressParts[1]} ${addressParts[0]}, ${addressParts[4]} ${addressParts[2]}");
+            widget.setGeoPoint(GeoPoint(
+                pickedData.latLong.latitude, pickedData.latLong.longitude));
+            Verhuren.mapController.move(LatLng(pickedData.latLong.latitude,pickedData.latLong.longitude), Verhuren.mapController.zoom);
 
-              Navigator.pop(
-                context,
-                MaterialPageRoute(builder: (context) => Verhuren()),
-              );
-            }),
-      ),
+            Navigator.pop(
+              context,
+            );
+          }),
     );
   }
 }
