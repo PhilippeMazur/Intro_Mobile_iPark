@@ -4,11 +4,27 @@ import 'package:flutter/src/widgets/placeholder.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const CustomAppBar({super.key, required this.title});
+  final bool navigationPopArrow;
+  const CustomAppBar({
+    Key? key,
+    required this.title,
+    bool? navigationPopArrow,
+  })  : navigationPopArrow = navigationPopArrow ?? false,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: navigationPopArrow == true
+          ? IconButton(
+              iconSize: 30,
+              icon: Icon(Icons.arrow_back),
+              color: Colors.black,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
       toolbarHeight: 70, // Set this height
       elevation: 0,
       centerTitle: true,

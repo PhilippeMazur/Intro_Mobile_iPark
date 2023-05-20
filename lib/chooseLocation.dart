@@ -26,6 +26,7 @@ class _ChooseLocation extends State<ChooseLocation> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: "Kies een locatie",
+        navigationPopArrow: true,
       ),
       body: SearchAndPick(
           center: LatLng(51.260197, 4.402771),
