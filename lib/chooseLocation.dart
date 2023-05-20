@@ -7,7 +7,6 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:ipark/search_and_pic.dart';
 import 'package:ipark/verhuren.dart';
 import 'package:latlong2/latlong.dart';
-
 import 'custom_app_bar.dart';
 
 class ChooseLocation extends StatefulWidget {
@@ -38,6 +37,8 @@ class _ChooseLocation extends State<ChooseLocation> {
                 "${addressParts[1]} ${addressParts[0]}, ${addressParts[4]} ${addressParts[2]}");
             widget.setGeoPoint(GeoPoint(
                 pickedData.latLong.latitude, pickedData.latLong.longitude));
+            Verhuren.mapController.move(LatLng(pickedData.latLong.latitude,pickedData.latLong.longitude), Verhuren.mapController.zoom);
+
             Navigator.pop(
               context,
             );

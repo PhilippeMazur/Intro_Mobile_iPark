@@ -1,10 +1,7 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ipark/model/account.dart';
+import 'package:ipark/navigation.dart';
 import 'package:ipark/provider/authentication_provider.dart';
 import 'package:ipark/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,6 +71,11 @@ class loginScreen extends StatelessWidget {
           logger.e(e);
         }
         logger.d('succeeded');
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Navigation()),
+      );
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

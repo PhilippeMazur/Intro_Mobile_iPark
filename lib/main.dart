@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
                 if (login.user != null) {
                   return const Navigation();
                 } else {
-                  return loginScreen();
+                  return loginScreen(); 
                 }
               }),
             )),
