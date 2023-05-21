@@ -225,7 +225,7 @@ class _Verhuren extends State<Verhuren> {
                         TileLayer(
                           urlTemplate:
                               'http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', // Map provider URL
-                          subdomains: const ['1', '2', '3', '4'],
+                          subdomains: const ['1', '2', '3'],
                           retinaMode: true,
                         ),
                         MarkerLayer(
