@@ -55,7 +55,7 @@ class _Verhuren extends State<Verhuren> {
   late final DateTime fromDate;
   late final DateTime untilDate;
 
-  double scrollHeight = 700;
+  double scrollHeight = 800;
   bool _isTextFieldFocused = false;
   ScrollController _scrollController = ScrollController();
   String geoLocatie = "";
