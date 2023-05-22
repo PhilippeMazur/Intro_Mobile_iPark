@@ -55,7 +55,7 @@ class _Verhuren extends State<Verhuren> {
   late final DateTime fromDate;
   late final DateTime untilDate;
 
-  double scrollHeight = 700;
+  double scrollHeight = 750;
   bool _isTextFieldFocused = false;
   ScrollController _scrollController = ScrollController();
   String geoLocatie = "";
@@ -245,26 +245,24 @@ class _Verhuren extends State<Verhuren> {
                 ),
                 Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
-                    child: Expanded(
-                      child: MaterialButton(
-                        onPressed: () {
-                          getCurrentLocation();
-                        },
-                        color: Colors.blue,
-                        minWidth: 500,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(80.0),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        textColor: Color(0xffffffff),
-                        child: const Text(
-                          "Gebruik huidige locatie",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FontStyle.normal,
-                          ),
+                    child: MaterialButton(
+                      onPressed: () {
+                        getCurrentLocation();
+                      },
+                      color: Colors.blue,
+                      minWidth: 500,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(80.0),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      textColor: Color(0xffffffff),
+                      child: const Text(
+                        "Gebruik huidige locatie",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.normal,
                         ),
                       ),
                     )),
