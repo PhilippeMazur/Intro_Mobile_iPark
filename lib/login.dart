@@ -70,12 +70,6 @@ class loginScreen extends StatelessWidget {
         } catch (e) {
           logger.e(e);
         }
-        logger.d('succeeded');
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Navigation()),
-      );
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
